@@ -143,5 +143,171 @@
     }
     draw();
   </script>
+<script>
+/* ========= helpers you already asked for ========= */
+async function fileToDataUrl(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+async function submitProof({ orderId, email, method, amount, file }) {
+  const imageData = await fileToDataUrl(file);
+
+  const resp = await fetch('/.netlify/functions/upload-proof', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderId, email, method, amount, imageData })
+  });
+
+  return resp.json();
+}
+
+/* ========= tiny modal ========= */
+function showModal(message) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;
+    align-items:center;justify-content:center;z-index:9999;padding:16px
+  `;
+  const box = document.createElement('div');
+  box.style.cssText = `
+    background:#fff;border-radius:16px;border:1px solid #e6e9ee;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);max-width:520px;width:100%;
+    padding:20px;text-align:center
+  `;
+  box.innerHTML = `
+    <h3 style="margin:0 0 8px">Order Submitted</h3>
+    <p style="color:#475569;margin:0 0 14px">${message}</p>
+    <button id="modalClose" style="
+      background:#1CB346;color:#fff;border:none;border-radius:12px;
+      padding:10px 16px;font-weight:800;cursor:pointer
+    ">OK</button>
+  `;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  box.querySelector('#modalClose').onclick = () => overlay.remove();
+}
+
+/* ========= render the upload UI + wire up ========= */
+document.addEventListener('DOMContentLoaded', () => {
+  // Read values from the URL (these are already set earlier on the page)
+  const qs = new URLSearchParams(location.search);
+  const orderId = qs.get('order') || 'PC000000';
+  const method  = (qs.get('method') || '').toUpperCase();
+  const amount  = Number(qs.get('total') || '0').toFixed(2);
+
+  // Build the upload panel UI and append under the existing instructions
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.style.marginTop = '16px';
+  panel.innerHTML = `
+    <h3 style="margin:0 0 10px">Upload Payment Proof</h3>
+    <p style="color:var(--muted);margin:0 0 12px">
+      After sending your payment, upload a screenshot/receipt here so we can verify it faster.
+    </p>
+    <form id="proofForm" style="display:grid;gap:12px;grid-template-columns:1fr 1fr">
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-weight:700">Order ID</span>
+        <input type="text" value="${orderId}" disabled
+               style="border:1px solid var(--border);border-radius:12px;padding:10px">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-weight:700">Payment Method</span>
+        <input type="text" value="${method || '—'}" disabled
+               style="border:1px solid var(--border);border-radius:12px;padding:10px">
+      </label>
+
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-weight:700">Your Email</span>
+        <input id="proofEmail" type="email" placeholder="you@email.com" required
+               style="border:1px solid var(--border);border-radius:12px;padding:10px">
+      </label>
+      <label style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-weight:700">Amount (USD)</span>
+        <input id="proofAmount" type="number" step="0.01" min="0" value="${amount}" required
+               style="border:1px solid var(--border);border-radius:12px;padding:10px">
+      </label>
+
+      <label style="grid-column:1/-1;display:flex;flex-direction:column;gap:6px">
+        <span style="font-weight:700">Screenshot / Receipt (image)</span>
+        <input id="proofFile" type="file" accept="image/*" required
+               style="border:1px dashed #d1e7d9;background:#f7faf8;border-radius:12px;padding:16px">
+        <small style="color:var(--muted)">Accepted: JPG, PNG, HEIC (from iPhone). Max ~10MB recommended.</small>
+      </label>
+
+      <div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button id="proofBtn" type="submit" class="btn">Submit Proof</button>
+        <span id="proofStatus" style="color:var(--muted)"></span>
+      </div>
+    </form>
+  `;
+
+  // Insert right after the existing instructions block
+  const container = document.querySelector('main .panel:last-of-type') || document.querySelector('main');
+  container.parentNode.insertBefore(panel, container.nextSibling);
+
+  // Handle form submit
+  const form   = panel.querySelector('#proofForm');
+  const emailI = panel.querySelector('#proofEmail');
+  const amtI   = panel.querySelector('#proofAmount');
+  const fileI  = panel.querySelector('#proofFile');
+  const btn    = panel.querySelector('#proofBtn');
+  const status = panel.querySelector('#proofStatus');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.textContent = '';
+    const email  = (emailI.value || '').trim();
+    const amountStr = (amtI.value || '').trim();
+    const file   = fileI.files && fileI.files[0];
+
+    if (!email || !file || !amountStr) {
+      status.textContent = 'Please fill all fields and attach an image.';
+      status.style.color = '#b45309';
+      return;
+    }
+
+    if (!/^image\//.test(file.type)) {
+      status.textContent = 'That file is not an image.';
+      status.style.color = '#b45309';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Uploading…';
+    status.textContent = 'Uploading your proof securely…';
+
+    try {
+      const resp = await submitProof({
+        orderId,
+        email,
+        method,
+        amount: Number(amountStr),
+        file
+      });
+
+      if (resp && resp.ok) {
+        showModal(
+          'Thanks! Your order has been placed. You’ll receive a confirmation email shortly after your payment is verified.'
+        );
+        // Optional: clear file field
+        form.reset();
+      } else {
+        throw new Error(resp && resp.message ? resp.message : 'Upload failed');
+      }
+    } catch (err) {
+      status.textContent = 'Upload failed: ' + err.message;
+      status.style.color = '#b91c1c';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit Proof';
+    }
+  });
+});
+</script>
 </body>
 </html>
