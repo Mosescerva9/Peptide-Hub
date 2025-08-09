@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Legal — Peptide Hub</title>
+  <!-- Version: White Theme v2 -->
+  <style>
+    :root{
+      --green:#1CB346;
+      --green-d:#0f6b2b;
+      --ink:#0f172a;
+      --muted:#5b6472;
+      --card:#ffffff;
+      --radius:22px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --border:#eef2f0;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#ffffff;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    /* Header */
+    .header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
+    .nav{max-width:900px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
+    .nav img.logo{height:36px}
+    .nav .spacer{flex:1}
+    .nav a{font-weight:700;padding:10px 12px;border-radius:14px;color:#fff}
+    .nav a:hover{background:rgba(255,255,255,.12)}
+    /* Buttons */
+    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease}
+    .btn:hover{background:#17a03f;transform:translateY(-1px)}
+    .btn-outline{background:#fff;color:var(--green);border:2px solid var(--green)}
+    .container{max-width:900px;margin:24px auto;padding:0 18px}
+    /* Panels / Cards */
+    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:20px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:1.15/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:14px}
+    .body{padding:14px 16px}
+    .tag{display:inline-block;font-size:.75rem;font-weight:800;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
+    .title{font-size:1.05rem;font-weight:800;margin:8px 0 4px}
+    .desc{color:var(--muted);font-size:.95rem;min-height:44px}
+    .price{font-weight:800;margin:10px 0 12px}
+    /* Footer */
+    footer{max-width:900px;margin:28px auto 44px;padding:0 18px;color:#334155}
+    footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="index.html"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
+      <div class="spacer"></div>
+      <a href="index.html">Home</a>
+      <a href="checkout.html">Checkout</a>
+      <a href="legal.html">Legal</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="panel">
+      <h2>Legal & Compliance</h2>
+      <h3>Research Use Only</h3>
+      <p>All products are supplied strictly for laboratory research. They are not intended for human ingestion, injection, diagnostic, therapeutic, or veterinary use.</p>
+
+      <h3>Age Restriction</h3>
+      <p>Purchasers must be 21 years of age or older.</p>
+
+      <h3>Purity & Testing</h3>
+      <p>Peptide lots are HPLC tested. Certificates of analysis are available upon request with an order number.</p>
+
+      <h3>Ordering & Payments</h3>
+      <p>Orders are accepted for research institutions and qualified individuals. Payment instructions are provided at checkout for Cash App, Venmo, Zelle, and Bitcoin.</p>
+
+      <h3>Liability</h3>
+      <p>Buyer assumes all responsibility for safe handling, storage, and use in accordance with applicable laws and good laboratory practices.</p>
+
+      <h3>Privacy Policy</h3>
+      <p>Your information is used solely to process orders and communicate about your purchase. We do not sell customer data.</p>
+
+      <h3>Terms & Conditions</h3>
+      <p>By purchasing, you agree that products are for research purposes only and acknowledge the restrictions and disclaimers above.</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="legal"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
+  </footer>
+</body>
+</html>

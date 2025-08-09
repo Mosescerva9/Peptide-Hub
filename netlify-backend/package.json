@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "name": "peptide-netlify-backend",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo no-build-needed"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "mailgun.js": "^10.2.1",
+    "form-data": "^4.0.0",
+    "dayjs": "^1.11.13",
+    "joi": "^17.12.3",
+    "node-fetch": "^3.3.2"
+  }
+}

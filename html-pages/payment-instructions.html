@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment Instructions — Peptide Hub</title>
+  <!-- Version: White Theme v2 -->
+  <style>
+    :root{
+      --green:#1CB346;
+      --green-d:#0f6b2b;
+      --ink:#0f172a;
+      --muted:#5b6472;
+      --card:#ffffff;
+      --radius:22px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --border:#eef2f0;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#ffffff;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    /* Header */
+    .header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
+    .nav{max-width:900px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
+    .nav img.logo{height:36px}
+    .nav .spacer{flex:1}
+    .nav a{font-weight:700;padding:10px 12px;border-radius:14px;color:#fff}
+    .nav a:hover{background:rgba(255,255,255,.12)}
+    /* Buttons */
+    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease}
+    .btn:hover{background:#17a03f;transform:translateY(-1px)}
+    .btn-outline{background:#fff;color:var(--green);border:2px solid var(--green)}
+    .container{max-width:900px;margin:24px auto;padding:0 18px}
+    /* Panels / Cards */
+    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:20px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:1.15/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:14px}
+    .body{padding:14px 16px}
+    .tag{display:inline-block;font-size:.75rem;font-weight:800;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
+    .title{font-size:1.05rem;font-weight:800;margin:8px 0 4px}
+    .desc{color:var(--muted);font-size:.95rem;min-height:44px}
+    /* Footer */
+    footer{max-width:900px;margin:28px auto 44px;padding:0 18px;color:#334155}
+    footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="index.html"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
+      <div class="spacer"></div>
+      <a href="index.html">Home</a>
+      <a href="checkout.html">Checkout</a>
+      <a href="legal.html">Legal</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="panel">
+      <h1 id="title">Payment Instructions</h1>
+      <div style="color:var(--muted)" id="sub"></div>
+      <div id="content" style="margin-top:14px"></div>
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn" href="checkout.html">Back to Checkout</a>
+        <a class="btn btn-outline" href="index.html">Continue Shopping</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const CONFIG = {
+      cashapp:  { handle: "$PeptideCo" },
+      venmo:    { handle: "@PeptideCo" },
+      zelle:    { email : "support@peptideco.com", name: "Peptide Hub LLC" },
+      bitcoin:  { address: "1PeptideCoAddressGoesHere123..." }
+    };
+    const qs = new URLSearchParams(location.search);
+    const method = (qs.get('method') || '').toLowerCase();
+    const order  = qs.get('order') || 'PC000000';
+    const total  = qs.get('total') || '0.00';
+    const title = document.getElementById('title');
+    const sub   = document.getElementById('sub');
+    const content = document.getElementById('content');
+    const methodNames = {cashapp:'Cash App', venmo:'Venmo', zelle:'Zelle', bitcoin:'Bitcoin'};
+    title.textContent = `${methodNames[method] || 'Payment'} — Step by Step`;
+    sub.innerHTML = `Order <span style="background:rgba(28,179,70,.12);padding:2px 8px;border-radius:10px">${order}</span> · Total <span style="background:rgba(28,179,70,.12);padding:2px 8px;border-radius:10px">$${total}</span>`;
+    function copyable(label, value){
+      return `<div style="background:#f7faf8;border:1px solid #e6e9ee;border-radius:12px;padding:12px;margin-top:10px"><strong>${label}:</strong> <span style="background:#f3f6f4;border:1px solid #dbe7df;padding:6px 8px;border-radius:10px;font-family:ui-monospace,Menlo,Consolas,monospace">${value}</span></div>`;
+    }
+    function draw(){
+      let html = '';
+      switch(method){
+        case 'cashapp':
+          html = `${copyable('Handle', CONFIG.cashapp.handle)}
+            <ol style="margin:10px 0 0;padding-left:18px">
+              <li>Open Cash App and tap <strong>Pay</strong>.</li>
+              <li>Enter <strong>$${total}</strong> and tap <strong>Pay</strong>.</li>
+              <li>In the <em>For</em> note, type: <strong>${order}</strong>.</li>
+              <li>Send to <strong>${CONFIG.cashapp.handle}</strong>.</li>
+              <li>Keep your receipt screen for records.</li>
+            </ol>
+            <p style="color:var(--muted)">ETA: confirmations typically within <strong>0–6 hours</strong>.</p>`;
+          break;
+        case 'venmo':
+          html = `${copyable('Username', CONFIG.venmo.handle)}
+            <ol style="margin:10px 0 0;padding-left:18px">
+              <li>Open Venmo and tap <strong>Pay/Request</strong>.</li>
+              <li>Search <strong>${CONFIG.venmo.handle}</strong>.</li>
+              <li>Enter <strong>$${total}</strong>.</li>
+              <li>Memo: <strong>${order}</strong>.</li>
+              <li>Submit the payment.</li>
+            </ol>
+            <p style="color:var(--muted)">ETA: confirmations typically within <strong>0–6 hours</strong>.</p>`;
+          break;
+        case 'zelle':
+          html = `${copyable('Recipient', CONFIG.zelle.name)}${copyable('Email', CONFIG.zelle.email)}
+            <ol style="margin:10px 0 0;padding-left:18px">
+              <li>Open your banking app and choose <strong>Zelle</strong>.</li>
+              <li>Add recipient: <strong>${CONFIG.zelle.name}</strong> &lt;<strong>${CONFIG.zelle.email}</strong>&gt;.</li>
+              <li>Enter <strong>$${total}</strong>.</li>
+              <li>Memo: <strong>${order}</strong>.</li>
+              <li>Send and save your confirmation.</li>
+            </ol>
+            <p style="color:var(--muted)">ETA: confirmations typically within <strong>0–24 hours</strong> depending on bank.</p>`;
+          break;
+        case 'bitcoin':
+          html = `${copyable('BTC Address', CONFIG.bitcoin.address)}
+            <ol style="margin:10px 0 0;padding-left:18px">
+              <li>Open your wallet and choose <strong>Send</strong>.</li>
+              <li>Paste our address: <strong>${CONFIG.bitcoin.address}</strong>.</li>
+              <li>Enter the amount in USD (<strong>$${total}</strong>) or the equivalent BTC.</li>
+              <li>Include note/memo: <strong>${order}</strong> if possible.</li>
+              <li>Submit and wait for <strong>1–2 confirmations</strong>.</li>
+            </ol>
+            <p style="color:var(--muted)">ETA: usually <strong>10–60 minutes</strong> depending on network.</p>`;
+          break;
+        default:
+          html = `<p>Payment method not recognized. <a href="checkout.html">Go back</a> and choose a method.</p>`;
+      }
+      content.innerHTML = html;
+    }
+    draw();
+  </script>
+</body>
+</html>

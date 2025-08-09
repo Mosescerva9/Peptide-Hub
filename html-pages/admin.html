@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Peptide Hub Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+h1 { color: #2a5934; }
+table { border-collapse: collapse; width: 100%; background: white; }
+th, td { padding: 8px 12px; border-bottom: 1px solid #ddd; text-align: left; }
+tr:hover { background: #f1f1f1; }
+input, select, button { padding: 6px 10px; margin: 4px; }
+.status { font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>Peptide Hub Admin</h1>
+<div>
+  <label>Search Order ID or Email: <input type="text" id="searchBox"></label>
+  <button onclick="searchOrders()">Search</button>
+</div>
+<table id="ordersTable">
+  <thead>
+    <tr><th>Order ID</th><th>Status</th><th>Method</th><th>Amount</th><th>Email</th><th>Tracking</th><th>Actions</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<script>
+async function searchOrders(){
+  const q = document.getElementById('searchBox').value.trim();
+  const res = await fetch('/.netlify/functions/admin-search?q='+encodeURIComponent(q));
+  const data = await res.json();
+  const tbody = document.querySelector('#ordersTable tbody');
+  tbody.innerHTML = '';
+  data.forEach(o => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+o.order_id+'</td>'+
+      '<td class="status">'+o.status+'</td>'+
+      '<td>'+o.method+'</td>'+
+      '<td>$'+o.amount_usd+'</td>'+
+      '<td>'+o.customer_email+'</td>'+
+      '<td>'+(o.tracking_number || '')+'</td>'+
+      '<td>'+(o.status !== 'Payment_Received' ? '<button onclick="markPaid(\''+o.order_id+'\')">Mark Paid</button>' : '')+'</td>';
+    tbody.appendChild(tr);
+  });
+}
+async function markPaid(id){
+  if(!confirm('Mark '+id+' as Payment_Received?')) return;
+  await fetch('/.netlify/functions/admin-mark-paid', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ orderId: id })
+  });
+  searchOrders();
+}
+</script>
+</body>
+</html>
