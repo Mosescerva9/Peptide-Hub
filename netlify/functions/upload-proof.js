@@ -13,43 +13,38 @@ exports.handler = async (event) => {
     if (!orderId || !imageData) {
       return {
         statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ok: false, error: 'Missing required fields (orderId, imageData).' }),
       };
     }
 
-    // Expect data:image/png;base64,...
+    // Expect data:image/...;base64,AAAA...
     let mime = 'image/png';
     let b64 = imageData;
     const m = /^data:(image\/[\w+.-]+);base64,(.+)$/.exec(imageData);
-    if (m) {
-      mime = m[1];
-      b64 = m[2];
-    }
+    if (m) { mime = m[1]; b64 = m[2]; }
 
     const buffer = Buffer.from(b64, 'base64');
 
-    const proofs = getStore('proofs');
-    const ext = mime.split('/')[1] || 'png';
-    const key = `${orderId}-${Date.now()}.${ext}`;
-    const blob = new Blob([buffer], { type: mime });
+    const proofs = getStore('proofs');            // uses (or creates) a store named "proofs"
+    const ext = (mime.split('/')[1] || 'png').toLowerCase();
+    const safeId = String(orderId).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const key = `${safeId}-${Date.now()}.${ext}`;
 
-    await proofs.set(key, blob);
+    // Write the raw buffer; provide content type as a hint
+    await proofs.set(key, buffer, { contentType: mime });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        ok: true,
-        key,
-        orderId,
-        email,
-        method,
-        amount,
-        message: 'Proof image stored.',
-      }),
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ok: true, key, orderId, email, method, amount, message: 'Proof image stored.' }),
     };
   } catch (err) {
-    console.error(err);
-    return { statusCode: 500, body: JSON.stringify({ ok: false, error: 'Upload failed.' }) };
+    console.error('upload-proof error:', err);
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ok: false, error: err.message || 'Upload failed.' }),
+    };
   }
 };
