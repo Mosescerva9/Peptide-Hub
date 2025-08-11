@@ -93,7 +93,7 @@
       <div class="spacer"></div>
       <a href="#products">Products</a>
       <a href="checkout.html">Checkout</a>
-      <a href="legal.html">Legal</a>
+      <a href="admin.html">Track Your Package</a>
     </div>
   </header>
 
@@ -107,8 +107,7 @@
         <div class="cta-row">
           <a class="btn" href="#products">Browse Products</a>
           <a class="btn btn-outline" href="checkout.html">Go to Checkout</a>
-          <a class="btn btn-soft" href="admin.html">Track Your Package</a>
-        </div>
+          </div>
         <div class="trustbar">
           <div class="trust-item"><span class="dot"></span><div><strong>Third‑party verification</strong> for identity & potency</div></div>
           <div class="trust-item"><span class="dot"></span><div><strong>COA available</strong> for every lot (on request)</div></div>
@@ -130,7 +129,7 @@
       <div class="grid">
         <!-- Retatrutide -->
         <article class="card">
-          <span class="stock">Low stock</span>
+          <span class="stock">Only 7 left in stock</span>
           <div class="thumb"><img src="assets/retatrutide.png" alt="Retatrutide 10 mg"></div>
           <div class="body">
             <span class="tag">10 mg</span>
@@ -249,7 +248,7 @@
         </article>
         <!-- CJC-1295 DAC -->
         <article class="card">
-          <span class="stock">Low stock</span>
+          <span class="stock">Only 7 left</span>
           <div class="thumb"><img src="assets/cjc-1295-dac.png" alt="CJC-1295 DAC 5 mg"></div>
           <div class="body">
             <span class="tag">5 mg</span>
@@ -334,27 +333,5 @@
     })();
   </script>
 
-  <!-- Cookie banner (will show only if not previously accepted) -->
-  <div id="cookie-banner" style="position:fixed;left:16px;right:16px;bottom:16px;background:#0f172a;color:#fff;padding:14px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);display:none;z-index:50">
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px">We use essential and performance cookies to run our site and improve your experience. <a href="legal.html#privacy" style="color:#1CB346;text-decoration:underline">Learn more</a>.</div>
-      <button id="cookie-accept" class="btn" style="background:#1CB346;border:none;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer">Got it</button>
-    </div>
-  </div>
-  <script>
-    (function(){
-      try{
-        var key='ph_cookie_ok_v1';
-        if(!localStorage.getItem(key)){
-          var b=document.getElementById('cookie-banner');
-          b.style.display='block';
-          document.getElementById('cookie-accept').onclick=function(){
-            localStorage.setItem(key,'1');
-            b.remove();
-          };
-        }
-      }catch(e){/* ignore */}
-    })();
-  </script>
-</body>
+  </body>
 </html>
