@@ -4,58 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Checkout — Peptide Hub</title>
+  <!-- Version: White Theme v2 -->
   <style>
     :root{
-      --green:#1CB346; --green-d:#0f6b2b; --ink:#0f172a; --muted:#5b6472;
-      --card:#ffffff; --radius:22px; --shadow:0 10px 30px rgba(0,0,0,.08); --border:#eef2f0;
+      --green:#1CB346;
+      --green-d:#0f6b2b;
+      --ink:#0f172a;
+      --muted:#5b6472;
+      --card:#ffffff;
+      --radius:22px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --border:#eef2f0;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:#ffffff;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial}
     a{text-decoration:none;color:inherit}
     img{max-width:100%;display:block}
-
+    /* Header */
     .header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
-    .nav{max-width:1100px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
-    .nav img.logo{height:32px}
+    .nav{max-width:1000px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
+    .nav img.logo{height:36px}
     .nav .spacer{flex:1}
-    .nav a{font-weight:700;padding:8px 10px;border-radius:14px;color:#fff}
+    .nav a{font-weight:700;padding:10px 12px;border-radius:14px;color:#fff}
     .nav a:hover{background:rgba(255,255,255,.12)}
-    .badge{background:#fff;color:#0c8a37;font-weight:800;font-size:.72rem;line-height:1;min-width:18px;height:18px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;padding:2px 4px;margin-left:6px}
-
-    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;border:none;cursor:pointer}
+    /* Buttons */
+    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease}
     .btn:hover{background:#17a03f;transform:translateY(-1px)}
     .btn-outline{background:#fff;color:var(--green);border:2px solid var(--green)}
-    .btn-ghost{background:#f1f5f3;color:#0c3820;border:1px solid #dbe7df}
-
-    .container{max-width:1100px;margin:24px auto;padding:0 18px}
+    .container{max-width:1000px;margin:24px auto;padding:0 18px}
+    /* Panels / Cards */
     .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:20px}
-
-    .grid{display:grid;gap:18px;grid-template-columns:1.1fr .9fr}
-    @media (max-width:980px){ .grid{grid-template-columns:1fr} }
-
-    .cart-list{border:1px solid var(--border);border-radius:22px;overflow:hidden}
-    .row{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px dashed #e6e9ee}
-    .row:last-child{border-bottom:none}
-    .thumb{width:66px;height:66px;background:#f7faf8;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .prod{font-weight:700}
-    .muted{color:var(--muted);font-size:.9rem}
-    .qty{display:inline-flex;align-items:center;border:1px solid #dbe7df;border-radius:12px;overflow:hidden}
-    .qty button{background:#f7faf8;border:none;padding:6px 10px;cursor:pointer}
-    .qty input{width:40px;text-align:center;border:none;padding:6px 0}
-    .total-row{display:flex;justify-content:space-between;padding:12px 16px;font-weight:800}
-
-    .form-grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-    .form-grid-1{display:grid;gap:12px;grid-template-columns:1fr}
-    @media (max-width:620px){ .form-grid{grid-template-columns:1fr} }
-    label{font-weight:700;font-size:.9rem}
-    input,select,textarea{width:100%;padding:10px 12px;border:1px solid #dbe7df;border-radius:12px;font:inherit}
-    .section-title{margin:0 0 8px}
-    .help{font-size:.85rem;color:var(--muted)}
-
-    .paygrid{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
-    @media (max-width:560px){ .paygrid{grid-template-columns:1fr} }
-    .card-pay{position:relative;cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px;background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow)}
-    .radio{position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%}
+    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:1.15/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:14px}
+    .body{padding:14px 16px}
+    .tag{display:inline-block;font-size:.75rem;font-weight:800;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
+    .title{font-size:1.05rem;font-weight:800;margin:8px 0 4px}
+    .desc{color:var(--muted);font-size:.95rem;min-height:44px}
+    .price{font-weight:800;margin:10px 0 12px}
+    /* Footer */
+    footer{max-width:1000px;margin:28px auto 44px;padding:0 18px;color:#334155}
+    footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
   </style>
 </head>
 
@@ -66,215 +54,166 @@
       <div class="spacer"></div>
       <a href="index.html">Home</a>
       <a href="checkout.html">Checkout</a>
-      <a href="legal.html">Legal</a>
+      <a href="admin.html">Track Your Package</a>
     </nav>
   </header>
 
   <main class="container" style="margin-top:24px">
     <div class="panel">
       <h2 style="margin:6px 0 14px">Checkout</h2>
-      <div class="grid">
-        <!-- LEFT: CART -->
+      <div style="display:grid;gap:18px;grid-template-columns:1.2fr .8fr">
         <section>
-          <h3 class="section-title">Your Order</h3>
-          <div id="emptyState" class="panel" style="display:none">
-            Your cart is empty. <a href="index.html#products" class="btn btn-outline" style="margin-left:10px">Browse products</a>
-          </div>
-          <div id="cartList" class="cart-list"></div>
-          <div id="totals" class="panel" style="margin-top:12px;display:none">
-            <div class="total-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
-            <div class="total-row"><span>Shipping</span><span id="shipping">$0.00</span></div>
-            <div class="total-row" style="border-top:1px solid #e6e9ee;margin-top:6px;padding-top:16px;font-size:1.1rem"><span>Total</span><span id="total">$0.00</span></div>
-          </div>
-
-          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-            <button id="clearCart" class="btn-ghost" type="button">Clear Cart</button>
-            <a href="index.html#products" class="btn btn-outline">Add More</a>
+          <h3 style="margin:0 0 8px">Your Order</h3>
+          <div style="border:1px solid var(--border);border-radius:22px;padding:12px">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e6e9ee"><span>BPC-157 — 5 mg</span><strong>$119.99</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e6e9ee"><span>Retatrutide — 10 mg</span><strong>$289.99</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0 0;font-weight:800"><span>Total</span><span>$409.98</span></div>
           </div>
         </section>
 
-        <!-- RIGHT: FORMS + PAYMENT -->
         <section>
-          <h3 class="section-title">Shipping Information</h3>
-          <form id="chkForm" class="form-grid" autocomplete="shipping">
-            <div>
-              <label>Full Name</label>
-              <input required id="ship_name" placeholder="Jane Doe" />
-            </div>
-            <div>
-              <label>Email</label>
-              <input required type="email" id="email" placeholder="jane@example.com" />
-            </div>
-            <div class="form-grid-1">
-              <div>
-                <label>Address</label>
-                <input required id="addr1" placeholder="123 Main St" />
-              </div>
-              <div>
-                <label>Address 2 (optional)</label>
-                <input id="addr2" placeholder="Apt / Suite" />
-              </div>
-              <div class="form-grid">
-                <div>
-                  <label>City</label>
-                  <input required id="city" />
-                </div>
-                <div>
-                  <label>State</label>
-                  <input required id="state" maxlength="2" placeholder="KS" />
-                </div>
-              </div>
-              <div class="form-grid">
-                <div>
-                  <label>ZIP</label>
-                  <input required id="zip" />
-                </div>
-                <div>
-                  <label>Country</label>
-                  <input required id="country" value="USA" />
-                </div>
-              </div>
-            </div>
-
-            <div class="form-grid-1" style="margin-top:8px">
-              <h3 class="section-title">Billing (optional)</h3>
-              <div class="help">Leave blank if same as shipping.</div>
-              <div class="form-grid">
-                <div><label>Billing Name</label><input id="bill_name" /></div>
-                <div><label>Billing Email</label><input id="bill_email" type="email" /></div>
-              </div>
-              <div><label>Billing Address</label><input id="bill_addr1" /></div>
-              <div><label>Billing Address 2</label><input id="bill_addr2" /></div>
-              <div class="form-grid">
-                <div><label>City</label><input id="bill_city" /></div>
-                <div><label>State</label><input id="bill_state" maxlength="2" /></div>
-              </div>
-              <div class="form-grid">
-                <div><label>ZIP</label><input id="bill_zip" /></div>
-                <div><label>Country</label><input id="bill_country" /></div>
-              </div>
-            </div>
-          </form>
-
-          <h3 class="section-title" style="margin-top:16px">Payment Method</h3>
-          <div class="paygrid" id="paygrid">
-            <div class="card-pay pay" data-method="cashapp">
+          <h3 style="margin:0 0 8px">Choose a Payment Method</h3>
+          <div style="display:grid;gap:14px;grid-template-columns:repeat(2,1fr)" id="paygrid">
+            <div class="card pay" data-method="cashapp" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
               <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-cashapp.png" alt="Cash App">
-              <div style="flex:1"><h4 style="margin:0 0 4px">Cash App</h4><div class="muted">Confirm in 0–6 hours</div></div><span class="radio"></span>
+              <div style="flex:1">
+                <h4 style="margin:0 0 4px">Cash App</h4>
+                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>0–6 hours</strong></div>
+                <div style="font-size:.85rem;color:var(--muted)">Pay <strong>$PeptideCo</strong>. Put your order number in the note.</div>
+              </div>
+              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
             </div>
-            <div class="card-pay pay" data-method="venmo">
+            <div class="card pay" data-method="venmo" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
               <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-venmo.png" alt="Venmo">
-              <div style="flex:1"><h4 style="margin:0 0 4px">Venmo</h4><div class="muted">Confirm in 0–6 hours</div></div><span class="radio"></span>
+              <div style="flex:1">
+                <h4 style="margin:0 0 4px">Venmo</h4>
+                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>0–6 hours</strong></div>
+                <div style="font-size:.85rem;color:var(--muted)">Pay <strong>@PeptideCo</strong>. Add your order number in memo.</div>
+              </div>
+              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
             </div>
-            <div class="card-pay pay" data-method="zelle">
+            <div class="card pay" data-method="zelle" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
               <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-zelle.png" alt="Zelle">
-              <div style="flex:1"><h4 style="margin:0 0 4px">Zelle</h4><div class="muted">Confirm in 0–24 hours</div></div><span class="radio"></span>
+              <div style="flex:1">
+                <h4 style="margin:0 0 4px">Zelle</h4>
+                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>0–24 hours</strong></div>
+                <div style="font-size:.85rem;color:var(--muted)">Send to <strong>support@peptideco.com</strong>. Include order number.</div>
+              </div>
+              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
             </div>
-            <div class="card-pay pay" data-method="bitcoin">
+            <div class="card pay" data-method="bitcoin" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
               <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-bitcoin.png" alt="Bitcoin">
-              <div style="flex:1"><h4 style="margin:0 0 4px">Bitcoin</h4><div class="muted">~10–60 min</div></div><span class="radio"></span>
+              <div style="flex:1">
+                <h4 style="margin:0 0 4px">Bitcoin</h4>
+                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>~10–60 min</strong> (1–2 confirmations)</div>
+                <div style="font-size:.85rem;color:var(--muted)">Send to your unique BTC address on next step.</div>
+              </div>
+              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
             </div>
           </div>
-
           <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn" id="continue" disabled>Continue to Instructions</button>
             <a class="btn btn-outline" href="index.html">Back to Shop</a>
           </div>
-          <div class="help" style="margin-top:6px">By placing an order you agree products are for research only and not for human consumption.</div>
         </section>
       </div>
     </div>
   </main>
 
   <footer>
-    <div class="legal"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
-  </footer>
+
+    <div class="legal">
+      <strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.
+      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;font-weight:700">
+        <a href="legal.html#privacy">Privacy Policy</a> ·
+        <a href="legal.html#terms">Terms &amp; Conditions</a> ·
+        <a href="legal.html#disclaimer">Disclaimer</a> ·
+        <a href="legal.html#refunds">Returns &amp; Refunds</a> ·
+        <a href="legal.html#shipping">Shipping</a> ·
+        <a href="admin.html">Track Your Package</a>
+      </div>
+    </div>
+
+</footer>
 
   <script>
-    const CART_KEY='ph_cart'; const money=n=>`$${n.toFixed(2)}`;
-    const shippingFlat=0;
-    const q = (s)=>document.querySelector(s);
-
-    function getCart(){ try { return JSON.parse(localStorage.getItem(CART_KEY))||[] } catch { return [] } }
-    function setCart(items){ localStorage.setItem(CART_KEY, JSON.stringify(items)); draw(); }
-    function qtyChange(id, delta){
-      const cart = getCart(); const i = cart.findIndex(x=>x.id===id);
-      if(i>-1){ cart[i].qty += delta; if(cart[i].qty<=0) cart.splice(i,1); setCart(cart); }
-    }
-    function removeItem(id){ setCart(getCart().filter(x=>x.id!==id)); }
-    function clearCart(){ setCart([]); }
-
-    function draw(){
-      const list = q('#cartList'); const items = getCart();
-      if(items.length===0){
-        q('#emptyState').style.display='block'; list.innerHTML='';
-        q('#totals').style.display='none'; q('#continue').disabled = true; return;
-      }
-      q('#emptyState').style.display='none'; q('#totals').style.display='block'; q('#continue').disabled = false;
-      list.innerHTML = items.map(it=>`
-        <div class="row">
-          <div class="thumb"><img src="${it.img}" alt="${it.name} ${it.size}"></div>
-          <div><div class="prod">${it.name} — <span class="muted">${it.size}</span></div><div class="muted">${money(it.price)}</div></div>
-          <div class="qty"><button onclick="qtyChange('${it.id}',-1)">−</button><input value="${it.qty}" readonly><button onclick="qtyChange('${it.id}',1)">+</button></div>
-          <div style="text-align:right"><div>${money(it.price*it.qty)}</div><button class="btn-ghost" style="margin-top:6px" onclick="removeItem('${it.id}')">Remove</button></div>
-        </div>`).join('');
-      const subtotal = items.reduce((s,i)=>s+i.price*i.qty,0);
-      q('#subtotal').textContent = money(subtotal);
-      q('#shipping').textContent = money(shippingFlat);
-      q('#total').textContent = money(subtotal+shippingFlat);
-    }
-
-    // payment selection
-    let selectedMethod=null;
-    document.querySelectorAll('.pay').forEach(c=>{
-      c.addEventListener('click', ()=>{
-        document.querySelectorAll('.pay').forEach(x=>x.style.boxShadow='var(--shadow)');
+    const cards = document.querySelectorAll('.pay');
+    let selected = null;
+    cards.forEach(c => {
+      c.addEventListener('click', () => {
+        cards.forEach(x => x.style.boxShadow='var(--shadow)');
         c.style.boxShadow='0 0 0 4px rgba(28,179,70,.12)';
-        selectedMethod = c.dataset.method;
-        q('#continue').disabled = getCart().length===0 ? true : false;
+        selected = c.dataset.method;
+        document.getElementById('continue').disabled = false;
       });
     });
-
-    // continue
-    q('#continue').addEventListener('click', ()=>{
-      const items = getCart(); if(!items.length) return;
-      if(!selectedMethod){ alert('Please choose a payment method.'); return; }
-      // very light validation
-      const required = ['ship_name','email','addr1','city','state','zip','country'];
-      for(const id of required){ if(!q('#'+id).value.trim()){ alert('Please complete shipping: '+id.replace('_',' ')); return; } }
+    document.getElementById('continue').addEventListener('click', () => {
+      if(!selected) return;
       const orderId = 'PC' + Math.floor(100000 + Math.random()*900000);
-      const total = items.reduce((s,i)=>s+i.price*i.qty,0) + shippingFlat;
-
-      // stash order meta for instruction page
-      const orderMeta = {
-        orderId, total: total.toFixed(2), method: selectedMethod,
-        email: q('#email').value.trim(),
-        shipping: {
-          name:q('#ship_name').value.trim(), addr1:q('#addr1').value.trim(),
-          addr2:q('#addr2').value.trim(), city:q('#city').value.trim(),
-          state:q('#state').value.trim(), zip:q('#zip').value.trim(), country:q('#country').value.trim()
-        },
-        billing: {
-          name:q('#bill_name').value.trim(), email:q('#bill_email').value.trim(),
-          addr1:q('#bill_addr1').value.trim(), addr2:q('#bill_addr2').value.trim(),
-          city:q('#bill_city').value.trim(), state:q('#bill_state').value.trim(),
-          zip:q('#bill_zip').value.trim(), country:q('#bill_country').value.trim()
-        },
-        items
-      };
-      localStorage.setItem('ph_order_meta', JSON.stringify(orderMeta));
-
+      const total   = 409.98;
       const url = new URL('payment-instructions.html', window.location.href);
-      url.searchParams.set('method', selectedMethod);
+      url.searchParams.set('method', selected);
       url.searchParams.set('order', orderId);
-      url.searchParams.set('total', orderMeta.total);
+      url.searchParams.set('total', total.toFixed(2));
       window.location.href = url.toString();
     });
-
-    // expose
-    window.qtyChange = qtyChange; window.removeItem = removeItem;
-    document.getElementById('clearCart').addEventListener('click', clearCart);
-    draw();
   </script>
+</body>
+</html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout</title>
+  <style>
+    body{font-family:system-ui;margin:1.5rem;max-width:780px}
+    form{display:grid;gap:10px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hidden{display:none}
+    .notice{padding:8px;border:1px solid #ddd;border-radius:6px}
+    button{padding:10px 14px;border-radius:8px;border:0;background:#111;color:#fff;cursor:pointer}
+    button[disabled]{opacity:.5;cursor:not-allowed}
+  </style>
+</head>
+<body>
+  <h1>Checkout</h1>
+
+  <form id="checkout-form">
+    <h3>Contact</h3>
+    <input id="email" name="email" type="email" placeholder="Email" required />
+
+    <h3>Shipping</h3>
+    <input id="name" name="name" placeholder="Full name" required />
+    <input id="address_line1" name="address_line1" placeholder="Address line 1" required />
+    <input id="address_line2" name="address_line2" placeholder="Address line 2" />
+    <div class="row">
+      <input id="city" name="city" placeholder="City" required />
+      <input id="state" name="state" placeholder="State/Province" required />
+    </div>
+    <div class="row">
+      <input id="postal_code" name="postal_code" placeholder="Postal code" required />
+      <input id="country" name="country" placeholder="Country code (e.g. US)" required />
+    </div>
+
+    <h3>Payment method</h3>
+    <label><input type="radio" name="payment_method" value="cashapp" checked /> Cash App</label>
+    <label><input type="radio" name="payment_method" value="venmo" /> Venmo</label>
+    <label><input type="radio" name="payment_method" value="zelle" /> Zelle</label>
+    <label><input type="radio" name="payment_method" value="bitcoin" /> Bitcoin</label>
+
+    <div class="notice">
+      <b>Heads up:</b> You’ll see payment instructions after you place the order, and they’ll also be emailed to you.
+    </div>
+
+    <h3>Cart</h3>
+    <div id="cart"></div>
+    <div id="total" style="font-weight:700;margin-top:6px"></div>
+
+    <button id="confirm" type="submit">Confirm Order</button>
+    <div id="status" class="hidden"></div>
+  </form>
+
+  <script src="/checkout.js" type="module"></script>
 </body>
 </html>
