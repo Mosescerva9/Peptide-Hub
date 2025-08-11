@@ -23,12 +23,46 @@
     img{max-width:100%;display:block}
     .container{max-width:1200px;margin:0 auto;padding:0 16px}
     /* Header */
-    .header{position:sticky;top:0;z-index:40;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
-    .nav{display:flex;align-items:center;gap:12px;padding:12px 0}
-    .nav img.logo{height:36px}
-    .nav .spacer{flex:1}
-    .nav a{font-weight:800;padding:10px 12px;border-radius:14px;color:#fff}
-    .nav a:hover{background:rgba(255,255,255,.14)}
+/* --- Compact header with only Track + Cart, bigger logo --- */
+.header { /* keeps your existing gradient/sticky styles */ }
+
+.nav-compact{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 0;
+  padding-top:calc(12px + env(safe-area-inset-top)); /* nicer on iPhone notch */
+}
+
+.nav-compact .brand img.logo{
+  height:44px;            /* was 36px — slightly bigger */
+  width:auto;
+  display:block;
+}
+
+.nav-compact .actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.nav-btn{
+  font-weight:800;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.10);
+  backdrop-filter:saturate(1.1);
+  white-space:nowrap;
+}
+.nav-btn:hover{ background:rgba(255,255,255,.18); }
+
+@media (max-width:420px){
+  .nav-btn{ padding:8px 12px; font-size:.95rem; }
+}
+
     /* Buttons */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;border:0;cursor:pointer}
     .btn:hover{background:#17a03f;transform:translateY(-1px)}
