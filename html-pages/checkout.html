@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Checkout — Peptide Hub</title>
-  <!-- Version: White Theme v2 -->
   <style>
     :root{
       --green:#1CB346;
@@ -15,280 +14,417 @@
       --radius:22px;
       --shadow:0 10px 30px rgba(0,0,0,.08);
       --border:#eef2f0;
+      --bg:#ffffff;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:#ffffff;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial;-webkit-font-smoothing:antialiased}
     a{text-decoration:none;color:inherit}
     img{max-width:100%;display:block}
-    /* Header */
-    .header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
-    .nav{max-width:1000px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
-    .nav img.logo{height:36px}
-    .nav .spacer{flex:1}
-    .nav a{font-weight:700;padding:10px 12px;border-radius:14px;color:#fff}
-    .nav a:hover{background:rgba(255,255,255,.12)}
+    .container{max-width:1000px;margin:0 auto;padding:0 16px}
+
+    /* Compact header like index */
+    .header{
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: linear-gradient(90deg, var(--green), var(--green-d));
+      color: #fff;
+      border-bottom: 1px solid rgba(0,0,0,.04);
+    }
+    .header a{ color:#fff; }
+    .nav-compact{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 0;
+      padding-top:calc(12px + env(safe-area-inset-top));
+    }
+    .nav-compact .brand{ display:flex; align-items:center; }
+    .nav-compact .brand img.logo{ height:44px; width:auto; display:block; }
+    .nav-compact .actions{ display:flex; gap:10px; align-items:center; }
+    .nav-btn{
+      font-weight:800;color:#fff;padding:10px 14px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.10);
+      backdrop-filter:saturate(1.1);white-space:nowrap;
+    }
+    .nav-btn:hover{ background:rgba(255,255,255,.18); }
+    @media (max-width:420px){ .nav-btn{ padding:8px 12px; font-size:.95rem } }
+
+    /* Panels / layout */
+    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:16px}
+    main{margin:20px 0}
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media (min-width:900px){ .grid{ grid-template-columns:1.1fr .9fr } }
+    h2,h3{margin:6px 0 12px}
+    label{font-weight:700;font-size:.95rem}
+    input,select{
+      width:100%;padding:10px 12px;border:1px solid #e6e9ee;border-radius:12px;
+      font-size:1rem;outline:none;transition:border-color .15s ease;
+    }
+    input:focus,select:focus{ border-color:#b7e6c7; box-shadow:0 0 0 3px rgba(28,179,70,.12) }
+    .row{display:grid;gap:10px;grid-template-columns:1fr}
+    @media (min-width:600px){ .row{ grid-template-columns:1fr 1fr } }
+    .hint{color:#64748b;font-size:.85rem;margin-top:4px}
+
     /* Buttons */
-    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;border:0;cursor:pointer}
     .btn:hover{background:#17a03f;transform:translateY(-1px)}
-    .btn-outline{background:#fff;color:var(--green);border:2px solid var(--green)}
-    .container{max-width:1000px;margin:24px auto;padding:0 18px}
-    /* Panels / Cards */
-    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:20px}
-    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-    .thumb{aspect-ratio:1.15/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:14px}
-    .body{padding:14px 16px}
-    .tag{display:inline-block;font-size:.75rem;font-weight:800;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
-    .title{font-size:1.05rem;font-weight:800;margin:8px 0 4px}
-    .desc{color:var(--muted);font-size:.95rem;min-height:44px}
-    .price{font-weight:800;margin:10px 0 12px}
-    /* Footer */
-    footer{max-width:1000px;margin:28px auto 44px;padding:0 18px;color:#334155}
+    .btn[disabled]{opacity:.6;cursor:not-allowed;transform:none}
+
+    /* Order list */
+    .line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #e6e9ee}
+    .qtybtn{margin-left:10px;border:1px solid #e6e9ee;border-radius:8px;padding:2px 8px;background:#fff;cursor:pointer}
+    .qtybtn:active{transform:translateY(1px)}
+
+    /* Payment cards */
+    .paygrid{display:grid;gap:12px;grid-template-columns:1fr}
+    @media (min-width:600px){ .paygrid{grid-template-columns:1fr 1fr} }
+    .pay{cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:14px;border:2px solid #eef2f0;border-radius:18px;background:#fff;position:relative}
+    .pay.selected{ box-shadow:0 0 0 4px rgba(28,179,70,.12); border-color:#cdeed7 }
+    .pay img{width:42px;height:42px;object-fit:contain;border-radius:12px}
+    .pay .title{margin:0 0 2px;font-weight:900}
+    .pay .eta{font-size:.9rem;color:#256746;margin-bottom:6px}
+    .steps{display:none;color:#5b6472;font-size:.93rem;line-height:1.6;margin-top:4px}
+    .pay.selected .steps{display:block}
+
+    /* Trust */
+    .trust{display:flex;gap:12px;flex-wrap:wrap;color:#64748b;font-size:.93rem}
+    .pill{background:#f1f5f9;border:1px solid #e6e9ee;border-radius:999px;padding:6px 10px}
+
+    footer{max-width:1000px;margin:28px auto 64px;padding:0 16px;color:#334155}
     footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
   </style>
 </head>
-
 <body>
-  <header class="header">
-    <nav class="nav">
-      <a href="index.html"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
-      <div class="spacer"></div>
-      <a href="index.html">Home</a>
-      <a href="checkout.html">Checkout</a>
-      <a href="legal.html">Legal</a>
-    
-      <a href="checkout.html" id="mini-cart-link">Cart (<span id="mini-cart-count">0</span>)</a>
-      </nav>
-  </header>
 
-  <main class="container" style="margin-top:24px">
-    <div class="panel">
-      <h2 style="margin:6px 0 14px">Checkout</h2>
-      <div style="display:grid;gap:18px;grid-template-columns:1.2fr .8fr">
-        <section>
-          <h3 style="margin:0 0 8px">Your Order</h3>
-          <div style="border:1px solid var(--border);border-radius:22px;padding:12px"><div id="cart-list" style="display:flex;flex-direction:column;gap:8px"></div><div id="cart-total" style="display:flex;justify-content:space-between;padding:10px 0 0;font-weight:800"><span>Total</span><span id="total-val">$0.00</span></div></div>
-        </section>
-
-        <section>
-          <h3 style="margin:0 0 8px">Choose a Payment Method</h3>
-          <div style="display:grid;gap:14px;grid-template-columns:repeat(2,1fr)" id="paygrid">
-            <div class="card pay" data-method="cashapp" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
-              <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-cashapp.png" alt="Cash App">
-              <div style="flex:1">
-                <h4 style="margin:0 0 4px">Cash App</h4>
-                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>0–6 hours</strong></div>
-                <div style="font-size:.85rem;color:var(--muted)">Pay <strong>$PeptideCo</strong>. Put your order number in the note.</div>
-              </div>
-              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
-            </div>
-            <div class="card pay" data-method="venmo" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
-              <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-venmo.png" alt="Venmo">
-              <div style="flex:1">
-                <h4 style="margin:0 0 4px">Venmo</h4>
-                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>0–6 hours</strong></div>
-                <div style="font-size:.85rem;color:var(--muted)">Pay <strong>@PeptideCo</strong>. Add your order number in memo.</div>
-              </div>
-              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
-            </div>
-            <div class="card pay" data-method="zelle" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
-              <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-zelle.png" alt="Zelle">
-              <div style="flex:1">
-                <h4 style="margin:0 0 4px">Zelle</h4>
-                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>0–24 hours</strong></div>
-                <div style="font-size:.85rem;color:var(--muted)">Send to <strong>support@peptideco.com</strong>. Include order number.</div>
-              </div>
-              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
-            </div>
-            <div class="card pay" data-method="bitcoin" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border-width:2px">
-              <img style="width:48px;height:48px;object-fit:contain;border-radius:14px" src="assets/pay-bitcoin.png" alt="Bitcoin">
-              <div style="flex:1">
-                <h4 style="margin:0 0 4px">Bitcoin</h4>
-                <div style="font-size:.9rem;color:#256746">Estimated confirmation: <strong>~10–60 min</strong> (1–2 confirmations)</div>
-                <div style="font-size:.85rem;color:var(--muted)">Send to your unique BTC address on next step.</div>
-              </div>
-              <span class="radio" style="position:absolute;right:12px;top:12px;width:18px;height:18px;border:2px solid var(--green);border-radius:50%"></span>
-            </div>
-          </div>
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn" id="continue" disabled>Continue to Instructions</button>
-            <a class="btn btn-outline" href="index.html">Back to Shop</a>
-          </div>
-        </section>
-      </div>
+<header class="header">
+  <div class="container nav-compact">
+    <a href="index.html" class="brand" aria-label="Peptide Hub — Home">
+      <img class="logo" src="assets/logo.png" alt="Peptide Hub logo" />
+    </a>
+    <div class="actions">
+      <a href="admin.html" class="nav-btn">Track Your Package</a>
+      <a href="checkout.html" class="nav-btn" id="mini-cart-link">Cart (<span id="mini-cart-count">0</span>)</a>
     </div>
-  </main>
+  </div>
+</header>
 
-  <footer>
-    <div class="legal"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
-  </footer>
+<main class="container">
+  <h2 style="margin:14px 0">Secure Checkout</h2>
+  <div class="trust" aria-hidden="true">
+    <span class="pill">TLS encryption</span>
+    <span class="pill">Discreet packaging</span>
+    <span class="pill">COA on request</span>
+    <span class="pill">US-based support</span>
+  </div>
 
-  <script>
-    const cards = document.querySelectorAll('.pay');
-    let selected = null;
-    cards.forEach(c => {
-      c.addEventListener('click', () => {
-        cards.forEach(x => x.style.boxShadow='var(--shadow)');
-        c.style.boxShadow='0 0 0 4px rgba(28,179,70,.12)';
-        selected = c.dataset.method;
-        document.getElementById('continue').disabled = false;
-      });
-    });
-    document.getElementById('continue').addEventListener('click', () => {
-      if(!selected) return;
-      const orderId = 'PC' + Math.floor(100000 + Math.random()*900000);
-      const total   = 409.98;
-      const url = new URL('payment-instructions.html', window.location.href);
-      url.searchParams.set('method', selected);
-      url.searchParams.set('order', orderId);
-      url.searchParams.set('total', total.toFixed(2));
-      window.location.href = url.toString();
-    });
-  </script>
+  <div class="grid" style="margin-top:12px">
+    <!-- Left: Customer details -->
+    <section class="panel" id="details">
+      <h3>Contact</h3>
+      <div class="row">
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="you@lab.edu" required>
+          <div class="hint">We’ll email your order confirmation and tracking link.</div>
+        </div>
+        <div>
+          <label for="phone">Phone (optional)</label>
+          <input id="phone" type="tel" placeholder="(555) 555‑1234">
+        </div>
+      </div>
 
-  <script>
-    (function(){
-      function fmt(n){ return '$' + n.toFixed(2); }
-      function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
-      function saveCart(c){ localStorage.setItem('ph_cart', JSON.stringify(c)); }
+      <h3 style="margin-top:16px">Shipping address</h3>
+      <div>
+        <label for="ship_name">Full name</label>
+        <input id="ship_name" placeholder="Full name" required>
+      </div>
+      <div class="row">
+        <div>
+          <label for="ship_address1">Address line 1</label>
+          <input id="ship_address1" placeholder="Address line 1" required>
+        </div>
+        <div>
+          <label for="ship_address2">Address line 2 (optional)</label>
+          <input id="ship_address2" placeholder="Apt, suite, etc.">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="ship_city">City</label>
+          <input id="ship_city" required>
+        </div>
+        <div>
+          <label for="ship_state">State/Province</label>
+          <input id="ship_state" required>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="ship_postal">Postal code</label>
+          <input id="ship_postal" required>
+        </div>
+        <div>
+          <label for="ship_country">Country</label>
+          <input id="ship_country" value="US" required>
+        </div>
+      </div>
 
-      function render(){
-        var cart = getCart();
-        var list = document.getElementById('cart-list');
-        var totalEl = document.getElementById('total-val');
-        var cont = document.getElementById('continue');
+      <div style="margin-top:14px;display:flex;align-items:center;gap:8px">
+        <input id="same_billing" type="checkbox" checked>
+        <label for="same_billing" style="font-weight:700">Billing same as shipping</label>
+      </div>
 
-        if(!list) return;
+      <div id="billing_block" style="display:none;margin-top:10px">
+        <h3>Billing address</h3>
+        <div>
+          <label for="bill_name">Full name</label>
+          <input id="bill_name" placeholder="Full name">
+        </div>
+        <div class="row">
+          <div>
+            <label for="bill_address1">Address line 1</label>
+            <input id="bill_address1" placeholder="Address line 1">
+          </div>
+          <div>
+            <label for="bill_address2">Address line 2 (optional)</label>
+            <input id="bill_address2" placeholder="Apt, suite, etc.">
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="bill_city">City</label>
+            <input id="bill_city">
+          </div>
+          <div>
+            <label for="bill_state">State/Province</label>
+            <input id="bill_state">
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="bill_postal">Postal code</label>
+            <input id="bill_postal">
+          </div>
+          <div>
+            <label for="bill_country">Country</label>
+            <input id="bill_country" value="US">
+          </div>
+        </div>
+      </div>
+    </section>
 
-        list.innerHTML = '';
-        var total = 0;
-        if(cart.length === 0){
-          list.innerHTML = '<div style="color:#5b6472;padding:8px">Your cart is empty. <a href="index.html#products" style="color:#1CB346;font-weight:800">Add products</a>.</div>';
-          totalEl.textContent = fmt(0);
-          if(cont) cont.disabled = true;
-          return;
-        }
+    <!-- Right: Order & Payment -->
+    <aside class="panel">
+      <h3>Your Order</h3>
+      <div id="cart-box">
+        <div id="cart-list"></div>
+        <div style="display:flex;justify-content:space-between;font-weight:900;padding-top:8px">
+          <span>Total</span><span id="total-val">$0.00</span>
+        </div>
+      </div>
 
-        cart.forEach(function(item, idx){
-          var line = document.createElement('div');
-          line.style.display = 'flex';
-          line.style.justifyContent = 'space-between';
-          line.style.alignItems = 'center';
-          line.style.padding = '8px 0';
-          line.style.borderBottom = '1px dashed #e6e9ee';
-          var left = document.createElement('div');
-          left.textContent = item.name + ' — ' + item.size + ' × ' + item.qty;
-          var right = document.createElement('div');
-          var lineTotal = item.price * item.qty;
-          right.textContent = fmt(lineTotal);
-          total += lineTotal;
+      <h3 style="margin-top:16px">Payment</h3>
+      <div class="paygrid" id="paygrid">
+        <div class="pay" data-method="cashapp">
+          <img src="assets/pay-cashapp.png" alt="Cash App">
+          <div>
+            <div class="title">Cash App</div>
+            <div class="eta">Estimated confirmation: <strong>0–6 hours</strong></div>
+            <div class="steps">
+              <ol>
+                <li>Open Cash App and send the <b>order total</b> to <b>$PeptideCo</b>.</li>
+                <li>In the note, include: <b>Order # (shown after submit)</b>.</li>
+                <li>We’ll email confirmation once received.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
 
-          // Remove link
-          var rm = document.createElement('a');
-          rm.href = '#';
-          rm.textContent = 'Remove';
-          rm.style.marginLeft = '12px';
-          rm.style.fontWeight = '800';
-          rm.style.color = '#b91c1c';
-          rm.addEventListener('click', function(ev){
-            ev.preventDefault();
-            var c = getCart();
-            c.splice(idx,1);
-            saveCart(c);
-            render();
-          });
+        <div class="pay" data-method="venmo">
+          <img src="assets/pay-venmo.png" alt="Venmo">
+          <div>
+            <div class="title">Venmo</div>
+            <div class="eta">Estimated confirmation: <strong>0–6 hours</strong></div>
+            <div class="steps">
+              <ol>
+                <li>Open Venmo and pay the <b>order total</b> to <b>@PeptideCo</b>.</li>
+                <li>Add a memo: <b>Order # (shown after submit)</b>.</li>
+                <li>We’ll email confirmation once received.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
 
-          // qty controls
-          var minus = document.createElement('button');
-          minus.textContent = '–';
-          minus.style.marginLeft = '12px';
-          minus.style.border = '1px solid #e6e9ee';
-          minus.style.borderRadius = '8px';
-          minus.style.padding = '2px 8px';
-          minus.style.cursor = 'pointer';
-          minus.addEventListener('click', function(){
-            var c = getCart();
-            if(c[idx].qty > 1){ c[idx].qty -= 1; } else { c.splice(idx,1); }
-            saveCart(c); document.dispatchEvent(new Event('ph_cart_updated')); render();
-          });
+        <div class="pay" data-method="zelle">
+          <img src="assets/pay-zelle.png" alt="Zelle">
+          <div>
+            <div class="title">Zelle</div>
+            <div class="eta">Estimated confirmation: <strong>0–24 hours</strong></div>
+            <div class="steps">
+              <ol>
+                <li>Send the <b>order total</b> via Zelle to <b>support@peptideco.com</b>.</li>
+                <li>Memo: <b>Order # (shown after submit)</b>.</li>
+                <li>We’ll email confirmation once received.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
 
-          var plus = document.createElement('button');
-          plus.textContent = '+';
-          plus.style.marginLeft = '6px';
-          plus.style.border = '1px solid #e6e9ee';
-          plus.style.borderRadius = '8px';
-          plus.style.padding = '2px 8px';
-          plus.style.cursor = 'pointer';
-          plus.addEventListener('click', function(){
-            var c = getCart();
-            c[idx].qty += 1;
-            saveCart(c); document.dispatchEvent(new Event('ph_cart_updated')); render();
-          });
+        <div class="pay" data-method="bitcoin">
+          <img src="assets/pay-bitcoin.png" alt="Bitcoin">
+          <div>
+            <div class="title">Bitcoin</div>
+            <div class="eta">Estimated confirmation: <strong>~10–60 min</strong> (1–2 confirmations)</div>
+            <div class="steps">
+              <ol>
+                <li>After submitting, you’ll see a <b>unique BTC address</b>.</li>
+                <li>Send the <b>order total</b> to that address.</li>
+                <li>We’ll confirm after 1–2 network confirmations.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          var rightWrap = document.createElement('div');
-          rightWrap.style.display='flex';
-          rightWrap.style.alignItems='center';
-          rightWrap.appendChild(right);
-          rightWrap.appendChild(minus);
-          rightWrap.appendChild(plus);
-          rightWrap.appendChild(rm);
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="submit-order" disabled>Submit Order</button>
+        <a class="btn" href="index.html" style="background:#0f172a">Continue Shopping</a>
+      </div>
+      <div class="hint" style="margin-top:8px">By submitting, you agree to our research-use-only policy.</div>
+    </aside>
+  </div>
+</main>
 
-          line.appendChild(left);
-          line.appendChild(rightWrap);
-          list.appendChild(line);
-        });
-
-        totalEl.textContent = fmt(total);
-        if(cont) cont.disabled = false;
-
-        // Update Continue handler to pass correct total
-        var btn = document.getElementById('continue');
-        if(btn){
-          btn.onclick = function(){
-            // find selected method
-            var selected = null;
-            document.querySelectorAll('.pay').forEach(function(c){
-              if(c.style.boxShadow && c.style.boxShadow.indexOf('4px')>-1) selected = c.dataset.method;
-            });
-            if(!selected){ alert('Please choose a payment method.'); return; }
-            var orderId = 'PC' + Math.floor(100000 + Math.random()*900000);
-            var url = new URL('payment-instructions.html', window.location.href);
-            url.searchParams.set('method', selected);
-            url.searchParams.set('order', orderId);
-            url.searchParams.set('total', total.toFixed(2));
-            window.location.href = url.toString();
-          };
-        }
-      }
-
-      // Mark selected payment with boxShadow like original code
-      document.querySelectorAll('.pay').forEach(function(c){
-        c.addEventListener('click', function(){
-          document.querySelectorAll('.pay').forEach(x => x.style.boxShadow='var(--shadow)');
-          c.style.boxShadow='0 0 0 4px rgba(28,179,70,.12)';
-        });
-      });
-
-      document.addEventListener('DOMContentLoaded', render);
-    })();
-  </script>
-
+<footer>
+  <div class="legal"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
+</footer>
 
 <script>
 (function(){
+  // Cart helpers
   function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
-  function countItems(){ return getCart().reduce(function(n,i){ return n + (i.qty||0); }, 0); }
-  function renderMiniCart(){
-    var span = document.getElementById('mini-cart-count');
-    if(!span) return;
-    span.textContent = countItems();
+  function saveCart(c){ localStorage.setItem('ph_cart', JSON.stringify(c)); document.dispatchEvent(new Event('ph_cart_updated')); }
+
+  // Prefill from localStorage (basic)
+  function getCheckout(){ try{ return JSON.parse(localStorage.getItem('ph_checkout')||'{}'); }catch(e){ return {}; } }
+  function saveCheckout(data){ localStorage.setItem('ph_checkout', JSON.stringify(data)); }
+
+  // Render mini cart count
+  function renderMini(){ var span = document.getElementById('mini-cart-count'); if(!span) return;
+    span.textContent = getCart().reduce((n,i)=>n+(i.qty||0),0);
   }
-  window.addEventListener('storage', function(e){ if(e.key === 'ph_cart') renderMiniCart(); });
-  document.addEventListener('ph_cart_updated', renderMiniCart);
-  document.addEventListener('DOMContentLoaded', renderMiniCart);
-  // If an add-to-cart is clicked on this page, update count immediately
-  document.addEventListener('click', function(e){
-    var a = e.target && e.target.closest ? e.target.closest('.add-to-cart') : null;
-    if(a){ setTimeout(function(){ document.dispatchEvent(new Event('ph_cart_updated')); }, 0); }
+
+  document.addEventListener('ph_cart_updated', renderMini);
+  window.addEventListener('storage', function(e){ if(e.key==='ph_cart') renderMini(); });
+  document.addEventListener('DOMContentLoaded', renderMini);
+
+  // Populate form from saved data
+  document.addEventListener('DOMContentLoaded', function(){
+    var data = getCheckout();
+    ['email','phone',
+     'ship_name','ship_address1','ship_address2','ship_city','ship_state','ship_postal','ship_country',
+     'bill_name','bill_address1','bill_address2','bill_city','bill_state','bill_postal','bill_country'
+    ].forEach(function(id){ if(data[id]){ var el=document.getElementById(id); if(el) el.value=data[id]; }});
+  });
+
+  // Toggle billing block
+  var chk = document.getElementById('same_billing');
+  var billing = document.getElementById('billing_block');
+  function updateBillingToggle(){
+    var same = chk.checked;
+    billing.style.display = same ? 'none' : 'block';
+    // Toggle required fields
+    ['bill_name','bill_address1','bill_city','bill_state','bill_postal','bill_country'].forEach(function(id){
+      var el=document.getElementById(id); if(!el) return;
+      el.required = !same;
+    });
+  }
+  chk.addEventListener('change', updateBillingToggle);
+  updateBillingToggle();
+
+  // Render cart
+  var list = document.getElementById('cart-list');
+  var totalEl = document.getElementById('total-val');
+  function renderCart(){
+    var cart = getCart();
+    list.innerHTML='';
+    var total=0;
+    if(cart.length===0){
+      list.innerHTML='<div style="color:#5b6472;padding:8px">Your cart is empty. <a href="index.html#products" style="color:#1CB346;font-weight:800">Add products</a>.</div>';
+      totalEl.textContent = '$0.00';
+      updateSubmitDisabled();
+      return;
+    }
+    cart.forEach(function(item, idx){
+      var line = document.createElement('div');
+      line.className='line';
+      var left = document.createElement('div'); left.textContent = item.name + ' — ' + item.size + ' × ' + item.qty;
+      var rightWrap = document.createElement('div'); rightWrap.style.display='flex'; rightWrap.style.alignItems='center';
+      var price = document.createElement('div'); var lineTotal = item.price * item.qty; price.textContent = '$' + lineTotal.toFixed(2); total += lineTotal;
+      var minus = document.createElement('button'); minus.className='qtybtn'; minus.textContent='–'; minus.onclick=function(){ var c=getCart(); if(c[idx].qty>1){c[idx].qty-=1}else{c.splice(idx,1)}; saveCart(c); renderCart();};
+      var plus = document.createElement('button'); plus.className='qtybtn'; plus.textContent='+'; plus.onclick=function(){ var c=getCart(); c[idx].qty+=1; saveCart(c); renderCart();};
+      var rm = document.createElement('a'); rm.href='#'; rm.textContent='Remove'; rm.style.marginLeft='10px'; rm.style.color='#b91c1c'; rm.style.fontWeight='800'; rm.onclick=function(e){e.preventDefault(); var c=getCart(); c.splice(idx,1); saveCart(c); renderCart();};
+      rightWrap.appendChild(price); rightWrap.appendChild(minus); rightWrap.appendChild(plus); rightWrap.appendChild(rm);
+      line.appendChild(left); line.appendChild(rightWrap); list.appendChild(line);
+    });
+    totalEl.textContent = '$' + total.toFixed(2);
+    updateSubmitDisabled();
+  }
+  document.addEventListener('DOMContentLoaded', renderCart);
+  document.addEventListener('ph_cart_updated', renderCart);
+
+  // Payment selection
+  var selected = null;
+  document.querySelectorAll('.pay').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('.pay').forEach(function(x){ x.classList.remove('selected'); });
+      card.classList.add('selected');
+      selected = card.getAttribute('data-method');
+      updateSubmitDisabled();
+    });
+  });
+
+  // Enable/disable submit
+  var submitBtn = document.getElementById('submit-order');
+  function requiredFilled(){
+    var ids = ['email','ship_name','ship_address1','ship_city','ship_state','ship_postal','ship_country'];
+    if(!chk.checked){ ids = ids.concat(['bill_name','bill_address1','bill_city','bill_state','bill_postal','bill_country']); }
+    for(var i=0;i<ids.length;i++){
+      var el=document.getElementById(ids[i]);
+      if(!el || !el.value.trim()){ return false; }
+      if(el.id==='email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) return false;
+    }
+    return true;
+  }
+  function updateSubmitDisabled(){
+    var cartOk = getCart().length>0;
+    submitBtn.disabled = !(cartOk && selected && requiredFilled());
+  }
+  document.addEventListener('input', updateSubmitDisabled);
+
+  // Submit handler
+  submitBtn.addEventListener('click', function(){
+    if(submitBtn.disabled) return;
+    // Save checkout info
+    var data = {};
+    ['email','phone',
+     'ship_name','ship_address1','ship_address2','ship_city','ship_state','ship_postal','ship_country',
+     'bill_name','bill_address1','bill_address2','bill_city','bill_state','bill_postal','bill_country'
+    ].forEach(function(id){ var el=document.getElementById(id); if(el) data[id]=el.value; });
+    data['same_billing']=chk.checked;
+    saveCheckout(data);
+
+    var orderId = 'PC' + Math.floor(100000 + Math.random()*900000);
+    var total = 0; getCart().forEach(function(i){ total += (i.price*i.qty); });
+
+    // Redirect to instructions
+    var url = new URL('payment-instructions.html', window.location.href);
+    url.searchParams.set('method', selected);
+    url.searchParams.set('order', orderId);
+    url.searchParams.set('total', total.toFixed(2));
+    window.location.href = url.toString();
   });
 })();
 </script>
