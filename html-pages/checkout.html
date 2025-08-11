@@ -53,10 +53,19 @@
 
     /* Panels / layout */
     .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:16px}
-    main{margin:20px 0}
-    .grid{display:grid;gap:16px;grid-template-columns:1fr;grid-template-areas:
+    main{margin:20px 0 28px}
+    .grid{
+      display:grid;gap:16px;grid-template-columns:1fr;grid-template-areas:
       "order"
-      "details";
+      "details"
+      "actions";
+    }
+    /* Desktop: details left, order right; actions full width */
+    @media (min-width:900px){
+      .grid{grid-template-columns:1.1fr .9fr;grid-template-areas:
+        "details order"
+        "actions actions";
+      }
     }
     /* Desktop: details left, order right */
     @media (min-width:900px){
@@ -65,6 +74,9 @@
     @media (min-width:900px){ .grid{ grid-template-columns:1.1fr .9fr } }
     h2,h3{margin:6px 0 12px}
     label{font-weight:700;font-size:.95rem}
+    .same-row{margin-top:14px;display:flex;align-items:center;gap:8px}
+    .same-row input{flex:0 0 auto}
+    .same-row label{flex:0 1 auto;white-space:nowrap;margin:0}
     input,select{
       width:100%;padding:10px 12px;border:1px solid #e6e9ee;border-radius:12px;
       font-size:1rem;outline:none;transition:border-color .15s ease;
@@ -178,10 +190,7 @@
         </div>
       </div>
 
-      <div style="margin-top:14px;display:flex;align-items:center;gap:8px">
-        <input id="same_billing" type="checkbox" checked>
-        <label for="same_billing" style="font-weight:700">Billing same as shipping</label>
-      </div>
+      <div class="same-row"><input id="same_billing" type="checkbox" checked><label for="same_billing">Billing same as shipping</label></div>
 
       <div id="billing_block" style="display:none;margin-top:10px">
         <h3>Billing address</h3>
@@ -295,12 +304,16 @@
         </div>
       </div>
 
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn" id="submit-order" disabled>Submit Order</button>
-        <a class="btn" href="index.html" style="background:#0f172a">Continue Shopping</a>
-      </div>
-      <div class="hint" style="margin-top:8px">By submitting, you agree to our research-use-only policy.</div>
+      
     </aside>
+    <!-- Actions footer -->
+    <section class="panel actions" id="actions" style="grid-area:actions">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <a class="btn" href="index.html" style="background:#0f172a">Continue Shopping</a>
+        <button class="btn" id="submit-order" disabled>Submit Order</button>
+      </div>
+      <div class="hint" style="margin-top:8px;text-align:right">By submitting, you agree to our research‑use‑only policy.</div>
+    </section>
   </div>
 </main>
 
