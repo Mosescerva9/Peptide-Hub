@@ -54,5 +54,94 @@ async function markPaid(id){
   searchOrders();
 }
 </script>
+
+<section style="margin-top:24px;max-width:800px">
+  <h2>Delivery FAQs</h2>
+  <div style="background:#f8faf9;border:1px solid #e6e9ee;border-radius:12px;padding:16px;display:grid;gap:12px">
+    <div>
+      <strong>When will my order ship?</strong>
+      <p>Orders placed before 2pm Central Time (Mon–Fri) typically ship the same day. Orders placed after this cutoff will ship the next business day.</p>
+    </div>
+    <div>
+      <strong>How long does delivery take?</strong>
+      <p>US domestic deliveries generally take 2–5 business days after shipment. Carrier delays can occur during peak seasons or severe weather.</p>
+    </div>
+    <div>
+      <strong>Will I get a tracking number?</strong>
+      <p>Yes. Once your order ships, you’ll receive a tracking number via email and text (if provided). You can also enter it above to check your package status.</p>
+    </div>
+    <div>
+      <strong>What carriers do you use?</strong>
+      <p>We primarily ship via USPS and UPS, with tracking and discreet packaging.</p>
+    </div>
+    <div>
+      <strong>Can I change my shipping address?</strong>
+      <p>If your order hasn’t shipped yet, contact our support team immediately to update your address.</p>
+    </div>
+  </div>
+</section>
+
+
+  <style>
+    .faq-wrap{max-width:1000px;margin:24px auto;padding:0 18px}
+    .faq{background:#fff;border:1px solid #eef2f0;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:16px}
+    .faq h2{margin:0 0 8px;color:#0f172a}
+    .faq-item{border-top:1px solid #eef2f0}
+    .faq-item:first-of-type{border-top:0}
+    .faq-q{cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 4px;font-weight:800}
+    .faq-a{display:none;padding:0 4px 12px;color:#5b6472;line-height:1.6}
+    .faq-q span{font-size:1.05rem}
+    .faq-q .icon{font-weight:900}
+  </style>
+  <div class="faq-wrap">
+    <div class="faq">
+      <h2>Delivery & Tracking — FAQs</h2>
+      <div class="faq-item">
+        <div class="faq-q"><span>When will my order ship?</span><div class="icon">+</div></div>
+        <div class="faq-a">Orders placed by <strong>2:00 pm Central Time (Mon–Fri)</strong> are typically handed to the carrier the same day. Orders after the cutoff ship the next business day.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>How long does delivery take?</span><div class="icon">+</div></div>
+        <div class="faq-a">Standard domestic delivery is usually <strong>2–5 business days</strong> depending on destination and carrier performance. Weather or peak-season volumes can add 1–3 days.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>How do I track my package?</span><div class="icon">+</div></div>
+        <div class="faq-a">Enter your order number and email on this page to see the latest scans. We also email/SMS your tracking link as soon as the label is created.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>My tracking isn’t updating — is that normal?</span><div class="icon">+</div></div>
+        <div class="faq-a">Yes, it can be normal for tracking to “pause” for 24–48 hours between scans, especially during transit handoffs. If there’s no update after 72 hours, contact support and we’ll investigate.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Do you deliver on weekends or holidays?</span><div class="icon">+</div></div>
+        <div class="faq-a">Carriers may deliver on Saturdays in some areas. There is <strong>no pickup or delivery</strong> on federal holidays.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Signature required?</span><div class="icon">+</div></div>
+        <div class="faq-a">Most orders do <em>not</em> require a signature. High-value shipments may require one at our discretion for security.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Change of address after ordering?</span><div class="icon">+</div></div>
+        <div class="faq-a">If the order hasn’t shipped, we can update the address—contact support immediately. After shipment, we can request a carrier intercept, but it isn’t guaranteed.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>Package marked delivered but not received</span><div class="icon">+</div></div>
+        <div class="faq-a">First, check with household members and neighbors and look around entrances. If still missing after 24 hours, reach out to support so we can open a carrier trace.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Simple accordion behavior
+    document.querySelectorAll('.faq-q').forEach(function(q){
+      q.addEventListener('click', function(){
+        var a = q.parentElement.querySelector('.faq-a');
+        var open = a.style.display === 'block';
+        document.querySelectorAll('.faq-a').forEach(x => x.style.display='none');
+        document.querySelectorAll('.faq-q .icon').forEach(i => i.textContent='+');
+        if(!open){ a.style.display='block'; q.querySelector('.icon').textContent='–'; }
+      });
+    });
+  </script>
+
 </body>
 </html>
