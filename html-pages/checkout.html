@@ -54,8 +54,10 @@
       <div class="spacer"></div>
       <a href="index.html">Home</a>
       <a href="checkout.html">Checkout</a>
-      <a href="admin.html">Track Your Package</a>
-    </nav>
+      <a href="legal.html">Legal</a>
+    
+      <a href="checkout.html" id="mini-cart-link">Cart (<span id="mini-cart-count">0</span>)</a>
+      </nav>
   </header>
 
   <main class="container" style="margin-top:24px">
@@ -64,11 +66,7 @@
       <div style="display:grid;gap:18px;grid-template-columns:1.2fr .8fr">
         <section>
           <h3 style="margin:0 0 8px">Your Order</h3>
-          <div style="border:1px solid var(--border);border-radius:22px;padding:12px">
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e6e9ee"><span>BPC-157 — 5 mg</span><strong>$119.99</strong></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e6e9ee"><span>Retatrutide — 10 mg</span><strong>$289.99</strong></div>
-            <div style="display:flex;justify-content:space-between;padding:10px 0 0;font-weight:800"><span>Total</span><span>$409.98</span></div>
-          </div>
+          <div style="border:1px solid var(--border);border-radius:22px;padding:12px"><div id="cart-list" style="display:flex;flex-direction:column;gap:8px"></div><div id="cart-total" style="display:flex;justify-content:space-between;padding:10px 0 0;font-weight:800"><span>Total</span><span id="total-val">$0.00</span></div></div>
         </section>
 
         <section>
@@ -121,20 +119,8 @@
   </main>
 
   <footer>
-
-    <div class="legal">
-      <strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.
-      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;font-weight:700">
-        <a href="legal.html#privacy">Privacy Policy</a> ·
-        <a href="legal.html#terms">Terms &amp; Conditions</a> ·
-        <a href="legal.html#disclaimer">Disclaimer</a> ·
-        <a href="legal.html#refunds">Returns &amp; Refunds</a> ·
-        <a href="legal.html#shipping">Shipping</a> ·
-        <a href="admin.html">Track Your Package</a>
-      </div>
-    </div>
-
-</footer>
+    <div class="legal"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
+  </footer>
 
   <script>
     const cards = document.querySelectorAll('.pay');
@@ -158,62 +144,154 @@
       window.location.href = url.toString();
     });
   </script>
-</body>
-</html>
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Checkout</title>
-  <style>
-    body{font-family:system-ui;margin:1.5rem;max-width:780px}
-    form{display:grid;gap:10px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .hidden{display:none}
-    .notice{padding:8px;border:1px solid #ddd;border-radius:6px}
-    button{padding:10px 14px;border-radius:8px;border:0;background:#111;color:#fff;cursor:pointer}
-    button[disabled]{opacity:.5;cursor:not-allowed}
-  </style>
-</head>
-<body>
-  <h1>Checkout</h1>
 
-  <form id="checkout-form">
-    <h3>Contact</h3>
-    <input id="email" name="email" type="email" placeholder="Email" required />
+  <script>
+    (function(){
+      function fmt(n){ return '$' + n.toFixed(2); }
+      function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
+      function saveCart(c){ localStorage.setItem('ph_cart', JSON.stringify(c)); }
 
-    <h3>Shipping</h3>
-    <input id="name" name="name" placeholder="Full name" required />
-    <input id="address_line1" name="address_line1" placeholder="Address line 1" required />
-    <input id="address_line2" name="address_line2" placeholder="Address line 2" />
-    <div class="row">
-      <input id="city" name="city" placeholder="City" required />
-      <input id="state" name="state" placeholder="State/Province" required />
-    </div>
-    <div class="row">
-      <input id="postal_code" name="postal_code" placeholder="Postal code" required />
-      <input id="country" name="country" placeholder="Country code (e.g. US)" required />
-    </div>
+      function render(){
+        var cart = getCart();
+        var list = document.getElementById('cart-list');
+        var totalEl = document.getElementById('total-val');
+        var cont = document.getElementById('continue');
 
-    <h3>Payment method</h3>
-    <label><input type="radio" name="payment_method" value="cashapp" checked /> Cash App</label>
-    <label><input type="radio" name="payment_method" value="venmo" /> Venmo</label>
-    <label><input type="radio" name="payment_method" value="zelle" /> Zelle</label>
-    <label><input type="radio" name="payment_method" value="bitcoin" /> Bitcoin</label>
+        if(!list) return;
 
-    <div class="notice">
-      <b>Heads up:</b> You’ll see payment instructions after you place the order, and they’ll also be emailed to you.
-    </div>
+        list.innerHTML = '';
+        var total = 0;
+        if(cart.length === 0){
+          list.innerHTML = '<div style="color:#5b6472;padding:8px">Your cart is empty. <a href="index.html#products" style="color:#1CB346;font-weight:800">Add products</a>.</div>';
+          totalEl.textContent = fmt(0);
+          if(cont) cont.disabled = true;
+          return;
+        }
 
-    <h3>Cart</h3>
-    <div id="cart"></div>
-    <div id="total" style="font-weight:700;margin-top:6px"></div>
+        cart.forEach(function(item, idx){
+          var line = document.createElement('div');
+          line.style.display = 'flex';
+          line.style.justifyContent = 'space-between';
+          line.style.alignItems = 'center';
+          line.style.padding = '8px 0';
+          line.style.borderBottom = '1px dashed #e6e9ee';
+          var left = document.createElement('div');
+          left.textContent = item.name + ' — ' + item.size + ' × ' + item.qty;
+          var right = document.createElement('div');
+          var lineTotal = item.price * item.qty;
+          right.textContent = fmt(lineTotal);
+          total += lineTotal;
 
-    <button id="confirm" type="submit">Confirm Order</button>
-    <div id="status" class="hidden"></div>
-  </form>
+          // Remove link
+          var rm = document.createElement('a');
+          rm.href = '#';
+          rm.textContent = 'Remove';
+          rm.style.marginLeft = '12px';
+          rm.style.fontWeight = '800';
+          rm.style.color = '#b91c1c';
+          rm.addEventListener('click', function(ev){
+            ev.preventDefault();
+            var c = getCart();
+            c.splice(idx,1);
+            saveCart(c);
+            render();
+          });
 
-  <script src="/checkout.js" type="module"></script>
+          // qty controls
+          var minus = document.createElement('button');
+          minus.textContent = '–';
+          minus.style.marginLeft = '12px';
+          minus.style.border = '1px solid #e6e9ee';
+          minus.style.borderRadius = '8px';
+          minus.style.padding = '2px 8px';
+          minus.style.cursor = 'pointer';
+          minus.addEventListener('click', function(){
+            var c = getCart();
+            if(c[idx].qty > 1){ c[idx].qty -= 1; } else { c.splice(idx,1); }
+            saveCart(c); document.dispatchEvent(new Event('ph_cart_updated')); render();
+          });
+
+          var plus = document.createElement('button');
+          plus.textContent = '+';
+          plus.style.marginLeft = '6px';
+          plus.style.border = '1px solid #e6e9ee';
+          plus.style.borderRadius = '8px';
+          plus.style.padding = '2px 8px';
+          plus.style.cursor = 'pointer';
+          plus.addEventListener('click', function(){
+            var c = getCart();
+            c[idx].qty += 1;
+            saveCart(c); document.dispatchEvent(new Event('ph_cart_updated')); render();
+          });
+
+          var rightWrap = document.createElement('div');
+          rightWrap.style.display='flex';
+          rightWrap.style.alignItems='center';
+          rightWrap.appendChild(right);
+          rightWrap.appendChild(minus);
+          rightWrap.appendChild(plus);
+          rightWrap.appendChild(rm);
+
+          line.appendChild(left);
+          line.appendChild(rightWrap);
+          list.appendChild(line);
+        });
+
+        totalEl.textContent = fmt(total);
+        if(cont) cont.disabled = false;
+
+        // Update Continue handler to pass correct total
+        var btn = document.getElementById('continue');
+        if(btn){
+          btn.onclick = function(){
+            // find selected method
+            var selected = null;
+            document.querySelectorAll('.pay').forEach(function(c){
+              if(c.style.boxShadow && c.style.boxShadow.indexOf('4px')>-1) selected = c.dataset.method;
+            });
+            if(!selected){ alert('Please choose a payment method.'); return; }
+            var orderId = 'PC' + Math.floor(100000 + Math.random()*900000);
+            var url = new URL('payment-instructions.html', window.location.href);
+            url.searchParams.set('method', selected);
+            url.searchParams.set('order', orderId);
+            url.searchParams.set('total', total.toFixed(2));
+            window.location.href = url.toString();
+          };
+        }
+      }
+
+      // Mark selected payment with boxShadow like original code
+      document.querySelectorAll('.pay').forEach(function(c){
+        c.addEventListener('click', function(){
+          document.querySelectorAll('.pay').forEach(x => x.style.boxShadow='var(--shadow)');
+          c.style.boxShadow='0 0 0 4px rgba(28,179,70,.12)';
+        });
+      });
+
+      document.addEventListener('DOMContentLoaded', render);
+    })();
+  </script>
+
+
+<script>
+(function(){
+  function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
+  function countItems(){ return getCart().reduce(function(n,i){ return n + (i.qty||0); }, 0); }
+  function renderMiniCart(){
+    var span = document.getElementById('mini-cart-count');
+    if(!span) return;
+    span.textContent = countItems();
+  }
+  window.addEventListener('storage', function(e){ if(e.key === 'ph_cart') renderMiniCart(); });
+  document.addEventListener('ph_cart_updated', renderMiniCart);
+  document.addEventListener('DOMContentLoaded', renderMiniCart);
+  // If an add-to-cart is clicked on this page, update count immediately
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('.add-to-cart') : null;
+    if(a){ setTimeout(function(){ document.dispatchEvent(new Event('ph_cart_updated')); }, 0); }
+  });
+})();
+</script>
+
 </body>
 </html>
