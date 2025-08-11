@@ -81,15 +81,21 @@
 </head>
 
 <body>
-  <header class="header">
-    <div class="container nav">
-      <a href="index.html"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
-      <div class="spacer"></div>
-      <a href="checkout.html">Checkout</a>
-      <a href="admin.html">Track Your Package</a>
-      <a href="checkout.html" id="mini-cart-link">Cart (<span id="mini-cart-count">0</span>)</a>
+<header class="header">
+  <div class="container nav-compact">
+    <a href="index.html" class="brand" aria-label="Peptide Hub — Home">
+      <img class="logo" src="assets/logo.png" alt="Peptide Hub logo" />
+    </a>
+
+    <div class="actions">
+      <a href="admin.html" class="nav-btn">Track Your Package</a>
+      <a href="checkout.html" class="nav-btn" id="mini-cart-link">
+        Cart (<span id="mini-cart-count">0</span>)
+      </a>
     </div>
-  </header>
+  </div>
+</header>
+
 
   <main class="container">
     <!-- HERO -->
