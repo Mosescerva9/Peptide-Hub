@@ -17,7 +17,7 @@
       --bg:#ffffff;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial;-webkit-font-smoothing:antialiased}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial;-webkit-font-smoothing:antialiased;overflow-x:hidden;max-width:100%}
     a{text-decoration:none;color:inherit}
     img{max-width:100%;display:block}
     .container{max-width:1000px;margin:0 auto;padding:0 16px}
@@ -54,7 +54,14 @@
     /* Panels / layout */
     .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:16px}
     main{margin:20px 0}
-    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    .grid{display:grid;gap:16px;grid-template-columns:1fr;grid-template-areas:
+      "order"
+      "details";
+    }
+    /* Desktop: details left, order right */
+    @media (min-width:900px){
+      .grid{grid-template-columns:1.1fr .9fr;grid-template-areas:"details order"}
+    }
     @media (min-width:900px){ .grid{ grid-template-columns:1.1fr .9fr } }
     h2,h3{margin:6px 0 12px}
     label{font-weight:700;font-size:.95rem}
@@ -121,7 +128,7 @@
 
   <div class="grid" style="margin-top:12px">
     <!-- Left: Customer details -->
-    <section class="panel" id="details">
+    <section class="panel details" id="details" style="grid-area:details">
       <h3>Contact</h3>
       <div class="row">
         <div>
@@ -216,7 +223,7 @@
     </section>
 
     <!-- Right: Order & Payment -->
-    <aside class="panel">
+    <aside class="panel order" style="grid-area:order">
       <h3>Your Order</h3>
       <div id="cart-box">
         <div id="cart-list"></div>
@@ -225,7 +232,7 @@
         </div>
       </div>
 
-      <h3 style="margin-top:16px">Payment</h3>
+      <h3 style="margin-top:16px">Choose a Payment Method</h3>
       <div class="paygrid" id="paygrid">
         <div class="pay" data-method="cashapp">
           <img src="assets/pay-cashapp.png" alt="Cash App">
@@ -361,7 +368,7 @@
       var line = document.createElement('div');
       line.className='line';
       var left = document.createElement('div'); left.textContent = item.name + ' — ' + item.size + ' × ' + item.qty;
-      var rightWrap = document.createElement('div'); rightWrap.style.display='flex'; rightWrap.style.alignItems='center';
+      var rightWrap = document.createElement('div'); rightWrap.style.display='flex'; rightWrap.style.alignItems='center'; rightWrap.style.flexWrap='wrap'; rightWrap.style.gap='8px'; rightWrap.style.justifyContent='flex-end';
       var price = document.createElement('div'); var lineTotal = item.price * item.qty; price.textContent = '$' + lineTotal.toFixed(2); total += lineTotal;
       var minus = document.createElement('button'); minus.className='qtybtn'; minus.textContent='–'; minus.onclick=function(){ var c=getCart(); if(c[idx].qty>1){c[idx].qty-=1}else{c.splice(idx,1)}; saveCart(c); renderCart();};
       var plus = document.createElement('button'); plus.className='qtybtn'; plus.textContent='+'; plus.onclick=function(){ var c=getCart(); c[idx].qty+=1; saveCart(c); renderCart();};
