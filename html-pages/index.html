@@ -4,196 +4,357 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Peptide Hub — Research Peptides</title>
+  <!-- Version: White Theme v3 (Conversion-Optimized) -->
   <style>
     :root{
-      --green:#1CB346; --green-d:#0f6b2b; --ink:#0f172a; --muted:#5b6472;
-      --card:#ffffff; --radius:22px; --shadow:0 10px 30px rgba(0,0,0,.08); --border:#eef2f0;
+      --green:#1CB346;
+      --green-d:#0f6b2b;
+      --ink:#0f172a;
+      --muted:#5b6472;
+      --card:#ffffff;
+      --radius:22px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --border:#eef2f0;
+      --bg:#ffffff;
+      --soft:#f6faf7;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:#ffffff;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial;-webkit-font-smoothing:antialiased}
     a{text-decoration:none;color:inherit}
     img{max-width:100%;display:block}
-
+    .container{max-width:1200px;margin:0 auto;padding:0 16px}
     /* Header */
-    .header{position:sticky;top:0;z-index:30;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
-    .nav{max-width:1200px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px}
-    .nav img.logo{height:32px}
+    .header{position:sticky;top:0;z-index:40;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04);backdrop-filter:saturate(1.1)}
+    .nav{display:flex;align-items:center;gap:12px;padding:12px 0}
+    .nav img.logo{height:36px}
     .nav .spacer{flex:1}
-    .nav a{font-weight:700;padding:8px 10px;border-radius:14px;color:#fff;white-space:nowrap}
-    .nav a:hover{background:rgba(255,255,255,.12)}
-    .cart-wrap{position:relative}
-    .cart-link{position:relative;display:inline-flex;align-items:center;gap:8px}
-    .badge{position:absolute;top:-6px;right:-8px;background:#fff;color:#0c8a37;font-weight:800;font-size:.72rem;line-height:1;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:2px 4px}
-
-    /* Mini cart */
-    .mini{position:absolute;right:0;top:44px;width:min(92vw,360px);background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);display:none}
-    .mini.open{display:block}
-    .mini-head{padding:12px 14px;border-bottom:1px solid #eef2f0;font-weight:800}
-    .mini-list{max-height:60vh;overflow:auto}
-    .mini-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px dashed #e6e9ee}
-    .mini-row:last-child{border-bottom:none}
-    .mini-thumb{width:48px;height:48px;border-radius:12px;background:#f7faf8;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .mini-name{font-weight:700;font-size:.95rem}
-    .mini-muted{color:var(--muted);font-size:.85rem}
-    .mini-foot{padding:12px 14px;border-top:1px solid #eef2f0;display:flex;gap:10px;align-items:center;justify-content:space-between}
-    .mini-empty{padding:14px;color:var(--muted)}
-
-    /* Toast */
-    .toast{position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:18px;background:#0f6b2b;color:#fff;padding:10px 14px;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s}
-    .toast.show{opacity:1}
-
-    /* Buttons / layout */
-    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;text-align:center;border:none;cursor:pointer}
+    .nav a{font-weight:800;padding:10px 12px;border-radius:14px;color:#fff}
+    .nav a:hover{background:rgba(255,255,255,.14)}
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;border:0;cursor:pointer}
     .btn:hover{background:#17a03f;transform:translateY(-1px)}
     .btn-outline{background:#fff;color:var(--green);border:2px solid var(--green)}
-    .container{max-width:1200px;margin:24px auto;padding:0 18px}
-    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:20px}
-    .catalog{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-    .thumb{aspect-ratio:1.1/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:14px}
-    .body{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
-    .tag{align-self:flex-start;display:inline-block;font-size:.75rem;font-weight:800;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
-    .title{font-size:1.05rem;font-weight:800;margin:2px 0 0}
-    .desc{color:var(--muted);font-size:.94rem;min-height:44px}
-    .price{font-weight:800;margin:2px 0 6px}
-    .actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+    .btn-soft{background:#0f172a;color:#fff}
+    /* Hero */
+    .hero{padding:20px 0 10px}
+    .hero-card{background:linear-gradient(180deg,#ffffff 0%,#f7fbf8 100%);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:20px}
+    .eyebrow{display:inline-block;font-size:.75rem;letter-spacing:.16em;font-weight:900;color:#0c3820;background:rgba(28,179,70,.12);padding:6px 10px;border-radius:999px}
+    .h1{font-size:clamp(28px,5.4vw,46px);line-height:1.08;margin:12px 0 6px}
+    .sub{color:var(--muted);font-size:clamp(14px,2.5vw,18px);max-width:760px}
+    .cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .trustbar{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px}
+    .trust-item{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px}
+    .dot{width:10px;height:10px;background:var(--green);border-radius:50%;margin-top:6px;flex:0 0 auto}
+    /* Inventory band */
+    .band{margin:16px 0;background:#0f172a;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+    .band strong{white-space:nowrap}
+    /* Products */
+    #products{padding:10px 0 0}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (min-width:900px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))} .trustbar{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;position:relative}
+    .thumb{aspect-ratio:1/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden}
+    .thumb img{transition:transform .25s ease;transform:scale(1.0)}
+    .card:hover .thumb img{transform:scale(1.06)}
+    .body{padding:12px 14px}
+    .tag{display:inline-block;font-size:.72rem;font-weight:900;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
+    .title{font-size:1.05rem;font-weight:900;margin:8px 0 4px}
+    .desc{color:var(--muted);font-size:.95rem;min-height:42px}
+    .price-row{display:flex;align-items:center;justify-content:space-between;margin:8px 0 12px}
+    .price{font-weight:900}
+    .stock{position:absolute;left:10px;top:10px;background:#0f172a;color:#fff;padding:6px 8px;border-radius:12px;font-size:.75rem;font-weight:800}
+    .coa{font-size:.88rem;font-weight:800;color:#0c3820;text-decoration:underline}
+    /* Sections */
+    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:18px}
+    .two{display:grid;gap:14px}
+    @media (min-width:900px){.two{grid-template-columns:1.2fr .8fr}}
+    /* Why choose */
+    .why{display:grid;gap:10px;grid-template-columns:repeat(1,minmax(0,1fr))}
+    @media (min-width:700px){.why{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .why-item{display:flex;gap:10px;align-items:flex-start}
+    /* Reviews */
+    .reviews{display:grid;gap:12px;grid-template-columns:repeat(1,minmax(0,1fr))}
+    @media (min-width:900px){.reviews{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .review{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px}
+    .cite{color:#64748b;font-size:.85rem;margin-top:6px}
+    /* Footer */
+    footer{max-width:1200px;margin:28px auto 64px;padding:0 16px;color:#334155}
+    footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
+    .links{margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;font-weight:800}
+    /* Utilities */
+    .hide-mobile{display:none}@media(min-width:700px){.hide-mobile{display:initial}}
   </style>
 </head>
 
 <body>
   <header class="header">
-    <nav class="nav">
-      <a href="index.html" aria-label="Peptide Hub Home"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
+    <div class="container nav">
+      <a href="index.html"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
       <div class="spacer"></div>
       <a href="#products">Products</a>
       <a href="checkout.html">Checkout</a>
       <a href="legal.html">Legal</a>
-
-      <div class="cart-wrap">
-        <a class="cart-link" href="javascript:void(0)" id="cartToggle" aria-label="Cart">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6l-2-2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
-          <span class="badge" id="cartBadge">0</span>
-        </a>
-        <div class="mini" id="miniCart" aria-live="polite">
-          <div class="mini-head">Your Cart</div>
-          <div class="mini-list" id="miniList"></div>
-          <div class="mini-foot">
-            <div><strong id="miniTotal">$0.00</strong></div>
-            <div style="display:flex;gap:8px">
-              <button class="btn-outline" id="miniClear">Clear</button>
-              <a class="btn" href="checkout.html">Checkout</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+    </div>
   </header>
 
-  <section class="container">
-    <div class="panel">
-      <span style="display:inline-block;font-size:.8rem;letter-spacing:.12em;font-weight:800;color:var(--green);background:rgba(28,179,70,.12);padding:6px 10px;border-radius:999px">PEPTIDE HUB</span>
-      <h1 style="font-size:clamp(28px,4vw,44px);margin:14px 0 8px">High-Purity Research Peptides — Delivered Fast</h1>
-      <p style="color:var(--muted);font-size:clamp(14px,2.2vw,18px);max-width:780px">Built for scientists and researchers who need consistent results: clean labels, clear doses, and fast, reliable fulfillment. Research-grade only. Not for human consumption.</p>
-      <div style="display:flex;gap:12px;margin-top:18px;flex-wrap:wrap">
-        <a class="btn" href="#products">Browse Products</a>
-        <a class="btn btn-outline" href="checkout.html">Go to Checkout</a>
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-card">
+        <span class="eyebrow">RESEARCH PEPTIDES</span>
+        <h1 class="h1">99%+ HPLC, Lab‑Verified Batches — <span style="white-space:nowrap">Ships in 24 Hours*</span></h1>
+        <p class="sub">Built for scientists who need consistent results: clean labels, clear doses, and reliable fulfillment. <strong>Research‑grade only. Not for human consumption.</strong></p>
+        <div class="cta-row">
+          <a class="btn" href="#products">Browse Products</a>
+          <a class="btn btn-outline" href="checkout.html">Go to Checkout</a>
+          <a class="btn btn-soft" href="admin.html">Track Your Package</a>
+        </div>
+        <div class="trustbar">
+          <div class="trust-item"><span class="dot"></span><div><strong>Third‑party verification</strong> for identity & potency</div></div>
+          <div class="trust-item"><span class="dot"></span><div><strong>COA available</strong> for every lot (on request)</div></div>
+          <div class="trust-item"><span class="dot"></span><div><strong>Discreet packaging</strong> with clear labels</div></div>
+          <div class="trust-item"><span class="dot"></span><div><strong>US-based support</strong> for researchers</div></div>
+        </div>
       </div>
+    </section>
+
+    <!-- URGENCY BAND -->
+    <div class="band">
+      <div><strong>Order within <span id="cutoff">3h 12m</span> for same‑day handoff.</strong> *Weekdays before 2pm CT.</div>
+      <a class="btn btn-outline" href="#products">Shop Now</a>
     </div>
-  </section>
 
-  <section id="products" class="container">
-    <h3 style="font-weight:800;letter-spacing:.04em;margin:0 0 12px;color:#0f172a">PRODUCT CATALOG</h3>
-    <div class="catalog" id="catalog"></div>
-  </section>
-
-  <footer class="container" style="margin-top:8px">
-    <div class="panel" style="color:#334155"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
-  </footer>
-
-  <div class="toast" id="toast">Added to cart</div>
-
-  <script>
-    const PRODUCTS = [
-      {id:'retatrutide', name:'Retatrutide', size:'10 mg', price:289.99, img:'assets/retatrutide.png'},
-      {id:'bpc-157', name:'BPC-157', size:'5 mg', price:119.99, img:'assets/bpc-157.png'},
-      {id:'tb-500', name:'TB 500', size:'5 mg', price:149.99, img:'assets/tb-500.png'},
-      {id:'hcg', name:'hCG', size:'5000 IU', price:79.99, img:'assets/hcg.png'},
-      {id:'bac-water', name:'Bacteriostatic Water', size:'10 mL', price:9.99, img:'assets/bac-water.png'},
-      {id:'ipamorelin', name:'Ipamorelin', size:'5 mg', price:89.99, img:'assets/ipamorelin.png'},
-      {id:'melanotan-2', name:'Melanotan 2', size:'10 mg', price:99.99, img:'assets/melanotan-2.png'},
-      {id:'cjc-1295-dac', name:'CJC-1295 DAC', size:'5 mg', price:129.99, img:'assets/cjc-1295-dac.png'},
-    ];
-    const CART_KEY='ph_cart', money=n=>`$${n.toFixed(2)}`;
-    const $=(q)=>document.querySelector(q);
-
-    function getCart(){ try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch{ return [] } }
-    function setCart(items){ localStorage.setItem(CART_KEY, JSON.stringify(items)); updateBadge(); drawMini(); }
-    function addToCart(id, qty=1){
-      const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
-      const cart = getCart(); const i = cart.findIndex(c=>c.id===id);
-      if(i>-1) cart[i].qty += qty; else cart.push({...p, qty});
-      setCart(cart);
-      showToast();
-    }
-    function updateBadge(){ $('#cartBadge').textContent = getCart().reduce((a,b)=>a+b.qty,0); }
-
-    function drawCatalog(){
-      const el = $('#catalog');
-      el.innerHTML = PRODUCTS.map(p=>`
+    <!-- PRODUCTS -->
+    <section id="products">
+      <h3 style="font-weight:900;letter-spacing:.04em;margin:0 0 12px;color:#0f172a">PRODUCT CATALOG</h3>
+      <div class="grid">
+        <!-- Retatrutide -->
         <article class="card">
-          <div class="thumb"><img src="${p.img}" alt="${p.name} ${p.size}"></div>
+          <span class="stock">Low stock</span>
+          <div class="thumb"><img src="assets/retatrutide.png" alt="Retatrutide 10 mg"></div>
           <div class="body">
-            <span class="tag">${p.size}</span>
-            <div class="title">${p.name}</div>
-            <div class="desc">Research use only. Not for human consumption.</div>
-            <div class="price">${money(p.price)}</div>
-            <div class="actions">
-              <button class="btn" data-buy="${p.id}">Buy Now</button>
-              <button class="btn btn-outline" data-add="${p.id}">Add to Cart</button>
+            <span class="tag">10 mg</span>
+            <div class="title">Retatrutide</div>
+            <div class="desc">Triple receptor agonist — research only.</div>
+            <div class="price-row">
+              <div class="price">$289.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
             </div>
           </div>
         </article>
-      `).join('');
-      el.querySelectorAll('[data-buy]').forEach(b=>b.addEventListener('click',e=>{
-        addToCart(e.currentTarget.dataset.buy,1);
-        location.href='checkout.html';
-      }));
-      el.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',e=>{
-        addToCart(e.currentTarget.dataset.add,1);
-      }));
-    }
+        <!-- BPC-157 -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/bpc-157.png" alt="BPC-157 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">BPC-157</div>
+            <div class="desc">Pentadecapeptide — 99% HPLC, research only.</div>
+            <div class="price-row">
+              <div class="price">$119.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- TB-500 -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/tb-500.png" alt="TB-500 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">TB 500</div>
+            <div class="desc">Thymosin β4 fragment — research only.</div>
+            <div class="price-row">
+              <div class="price">$149.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- hCG -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/hcg.png" alt="hCG 5000 IU"></div>
+          <div class="body">
+            <span class="tag">5000 IU</span>
+            <div class="title">hCG</div>
+            <div class="desc">Recombinant glycoprotein hormone — research only.</div>
+            <div class="price-row">
+              <div class="price">$79.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- BAC Water -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/bac-water.png" alt="Bacteriostatic Water 10 mL"></div>
+          <div class="body">
+            <span class="tag">10 mL</span>
+            <div class="title">Bacteriostatic Water</div>
+            <div class="desc">Sterile water with 0.9% benzyl alcohol.</div>
+            <div class="price-row">
+              <div class="price">$9.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- Ipamorelin -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/ipamorelin.png" alt="Ipamorelin 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">Ipamorelin</div>
+            <div class="desc">Selective GHRP analog — research only.</div>
+            <div class="price-row">
+              <div class="price">$89.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- Melanotan 2 -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/melanotan-2.png" alt="Melanotan 2 10 mg"></div>
+          <div class="body">
+            <span class="tag">10 mg</span>
+            <div class="title">Melanotan 2</div>
+            <div class="desc">Cyclized heptapeptide — research only.</div>
+            <div class="price-row">
+              <div class="price">$99.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- CJC-1295 DAC -->
+        <article class="card">
+          <span class="stock">Low stock</span>
+          <div class="thumb"><img src="assets/cjc-1295-dac.png" alt="CJC-1295 DAC 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">CJC-1295 DAC</div>
+            <div class="desc">Peptide analog of GHRH (DAC) — research only.</div>
+            <div class="price-row">
+              <div class="price">$129.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn" href="checkout.html">Buy Now</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
 
-    /* Mini cart */
-    function drawMini(){
-      const list = $('#miniList');
-      const items = getCart();
-      if(!items.length){ list.innerHTML = `<div class="mini-empty">Your cart is empty.</div>`; $('#miniTotal').textContent='$0.00'; return; }
-      list.innerHTML = items.map(i=>`
-        <div class="mini-row">
-          <div class="mini-thumb"><img src="${i.img}" alt="${i.name} ${i.size}"></div>
-          <div><div class="mini-name">${i.name}</div><div class="mini-muted">${i.size} · ${money(i.price)}</div></div>
-          <div class="mini-muted">×${i.qty}</div>
+    <!-- WHY CHOOSE -->
+    <section style="margin-top:16px">
+      <div class="panel">
+        <h3 style="margin:0 0 10px">Why Choose Peptide Hub?</h3>
+        <div class="why">
+          <div class="why-item"><span class="dot"></span><div><strong>99%+ HPLC</strong> on research peptides.</div></div>
+          <div class="why-item"><span class="dot"></span><div><strong>Batch‑level traceability</strong> & clean labels.</div></div>
+          <div class="why-item"><span class="dot"></span><div><strong>COA on request</strong> for every lot.</div></div>
         </div>
-      `).join('');
-      const total = items.reduce((s,i)=>s+i.price*i.qty,0);
-      $('#miniTotal').textContent = money(total);
-    }
-    $('#cartToggle').addEventListener('click', ()=>{
-      $('#miniCart').classList.toggle('open');
-    });
-    document.addEventListener('click',(e)=>{
-      if(!e.target.closest('.cart-wrap')) $('#miniCart').classList.remove('open');
-    });
-    $('#miniClear').addEventListener('click', ()=>setCart([]));
+      </div>
+    </section>
 
-    /* Toast */
-    let toastTimer=null;
-    function showToast(){
-      const t = $('#toast'); t.classList.add('show');
-      clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),1300);
-    }
+    <!-- REVIEWS (service-focused, compliant) -->
+    <section style="margin-top:16px">
+      <h3 style="margin:0 0 10px">What Researchers Say</h3>
+      <div class="reviews">
+        <div class="review">“Fast shipping and excellent packaging. Labels are clear and easy to catalog.”<div class="cite">— J. Patel, Lab Manager</div></div>
+        <div class="review">“Consistent purity and responsive support. Exactly what our lab needs.”<div class="cite">— R. Nguyen, PhD</div></div>
+        <div class="review">“COA access on request is a big plus. Reordering is a breeze.”<div class="cite">— A. Rivera, Research Tech</div></div>
+      </div>
+    </section>
 
-    drawCatalog(); updateBadge(); drawMini();
+    <!-- SECONDARY CTA BAND -->
+    <section style="margin-top:16px">
+      <div class="band">
+        <div><strong>Small‑batch inventory refresh weekly.</strong> Don’t miss the next drop.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn" href="checkout.html">Checkout</a>
+          <a class="btn btn-outline" href="#products">Add More</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="legal">
+      <strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.
+      <div class="links">
+        <a href="legal.html#privacy">Privacy Policy</a> ·
+        <a href="legal.html#terms">Terms &amp; Conditions</a> ·
+        <a href="legal.html#disclaimer">Disclaimer</a> ·
+        <a href="legal.html#refunds">Returns &amp; Refunds</a> ·
+        <a href="legal.html#shipping">Shipping</a> ·
+        <a href="admin.html">Track Your Package</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cutoff timer + Cookie banner (kept if already accepted) -->
+  <script>
+    // Simple countdown to 2pm CT (client local approximation)
+    (function(){
+      var now=new Date();
+      var cutoff=new Date(now);
+      cutoff.setHours(14,0,0,0);
+      if(now>cutoff){cutoff.setDate(cutoff.getDate()+1);}
+      function tick(){
+        var n=new Date();
+        var diff=cutoff-n;
+        if(diff<0){document.getElementById('cutoff').textContent='—';return;}
+        var h=Math.floor(diff/36e5), m=Math.floor((diff%36e5)/6e4);
+        document.getElementById('cutoff').textContent=h+'h '+m+'m';
+      }
+      tick(); setInterval(tick,3e4);
+    })();
+  </script>
+
+  <!-- Cookie banner (will show only if not previously accepted) -->
+  <div id="cookie-banner" style="position:fixed;left:16px;right:16px;bottom:16px;background:#0f172a;color:#fff;padding:14px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);display:none;z-index:50">
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">We use essential and performance cookies to run our site and improve your experience. <a href="legal.html#privacy" style="color:#1CB346;text-decoration:underline">Learn more</a>.</div>
+      <button id="cookie-accept" class="btn" style="background:#1CB346;border:none;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer">Got it</button>
+    </div>
+  </div>
+  <script>
+    (function(){
+      try{
+        var key='ph_cookie_ok_v1';
+        if(!localStorage.getItem(key)){
+          var b=document.getElementById('cookie-banner');
+          b.style.display='block';
+          document.getElementById('cookie-accept').onclick=function(){
+            localStorage.setItem(key,'1');
+            b.remove();
+          };
+        }
+      }catch(e){/* ignore */}
+    })();
   </script>
 </body>
 </html>
