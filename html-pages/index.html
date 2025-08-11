@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Peptide Hub — Research Peptides</title>
-  <!-- Version: White Theme v2 -->
+  <!-- Version: White Theme v3.1 (Conversion-Optimized + Mini Cart) -->
   <style>
     :root{
       --green:#1CB346;
@@ -15,187 +15,330 @@
       --radius:22px;
       --shadow:0 10px 30px rgba(0,0,0,.08);
       --border:#eef2f0;
+      --bg:#ffffff;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:#ffffff;color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial;-webkit-font-smoothing:antialiased}
     a{text-decoration:none;color:inherit}
     img{max-width:100%;display:block}
+    .container{max-width:1200px;margin:0 auto;padding:0 16px}
     /* Header */
-    .header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
-    .nav{max-width:1200px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
+    .header{position:sticky;top:0;z-index:40;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
+    .nav{display:flex;align-items:center;gap:12px;padding:12px 0}
     .nav img.logo{height:36px}
     .nav .spacer{flex:1}
-    .nav a{font-weight:700;padding:10px 12px;border-radius:14px;color:#fff}
-    .nav a:hover{background:rgba(255,255,255,.12)}
+    .nav a{font-weight:800;padding:10px 12px;border-radius:14px;color:#fff}
+    .nav a:hover{background:rgba(255,255,255,.14)}
     /* Buttons */
-    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;border:0;cursor:pointer}
     .btn:hover{background:#17a03f;transform:translateY(-1px)}
     .btn-outline{background:#fff;color:var(--green);border:2px solid var(--green)}
-    .container{max-width:1200px;margin:24px auto;padding:0 18px}
-    /* Panels / Cards */
-    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:20px}
-    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-    .thumb{aspect-ratio:1.15/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:14px}
-    .body{padding:14px 16px}
-    .tag{display:inline-block;font-size:.75rem;font-weight:800;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
-    .title{font-size:1.05rem;font-weight:800;margin:8px 0 4px}
-    .desc{color:var(--muted);font-size:.95rem;min-height:44px}
-    .price{font-weight:800;margin:10px 0 12px}
+    /* Hero */
+    .hero{padding:20px 0 10px}
+    .hero-card{background:linear-gradient(180deg,#ffffff 0%,#f7fbf8 100%);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:20px}
+    .eyebrow{display:inline-block;font-size:.75rem;letter-spacing:.16em;font-weight:900;color:#0c3820;background:rgba(28,179,70,.12);padding:6px 10px;border-radius:999px}
+    .h1{font-size:clamp(28px,5.4vw,46px);line-height:1.08;margin:12px 0 6px}
+    .sub{color:var(--muted);font-size:clamp(14px,2.5vw,18px);max-width:760px}
+    .cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .trustbar{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px}
+    .trust-item{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px}
+    .dot{width:10px;height:10px;background:#1CB346;border-radius:50%;margin-top:6px;flex:0 0 auto}
+    /* Inventory band */
+    .band{margin:16px 0;background:#0f172a;color:#fff;border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+    .band strong{white-space:nowrap}
+    /* Products */
+    #products{padding:10px 0 0}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (min-width:900px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))} .trustbar{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    .card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;position:relative}
+    .thumb{aspect-ratio:1/1;background:#f7faf8;display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden}
+    .thumb img{transition:transform .25s ease;transform:scale(1.0)}
+    .card:hover .thumb img{transform:scale(1.06)}
+    .body{padding:12px 14px}
+    .tag{display:inline-block;font-size:.72rem;font-weight:900;color:#0c3820;background:rgba(28,179,70,.12);padding:4px 8px;border-radius:999px}
+    .title{font-size:1.05rem;font-weight:900;margin:8px 0 4px}
+    .desc{color:var(--muted);font-size:.95rem;min-height:42px}
+    .price-row{display:flex;align-items:center;justify-content:space-between;margin:8px 0 12px}
+    .price{font-weight:900}
+    .stock{position:absolute;left:10px;top:10px;background:#0f172a;color:#fff;padding:6px 8px;border-radius:12px;font-size:.75rem;font-weight:800}
+    .coa{font-size:.88rem;font-weight:800;color:#0c3820;text-decoration:underline}
+    /* Sections */
+    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:18px}
+    /* Why choose */
+    .why{display:grid;gap:10px;grid-template-columns:repeat(1,minmax(0,1fr))}
+    @media (min-width:700px){.why{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .why-item{display:flex;gap:10px;align-items:flex-start}
+    /* Reviews */
+    .reviews{display:grid;gap:12px;grid-template-columns:repeat(1,minmax(0,1fr))}
+    @media (min-width:900px){.reviews{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .review{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px}
+    .cite{color:#64748b;font-size:.85rem;margin-top:6px}
     /* Footer */
-    footer{max-width:1200px;margin:28px auto 44px;padding:0 18px;color:#334155}
+    footer{max-width:1200px;margin:28px auto 64px;padding:0 16px;color:#334155}
     footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
+    .links{margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;font-weight:800}
   </style>
 </head>
 
 <body>
   <header class="header">
-    <nav class="nav">
+    <div class="container nav">
       <a href="index.html"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
       <div class="spacer"></div>
       <a href="#products">Products</a>
       <a href="checkout.html">Checkout</a>
-      <a href="legal.html">Legal</a>
-    
+      <a href="admin.html">Track Your Package</a>
       <a href="checkout.html" id="mini-cart-link">Cart (<span id="mini-cart-count">0</span>)</a>
-      </nav>
+    </div>
   </header>
 
-  <section class="container">
-    <div class="panel">
-      <span style="display:inline-block;font-size:.8rem;letter-spacing:.12em;font-weight:800;color:var(--green);background:rgba(28,179,70,.12);padding:6px 10px;border-radius:999px">PEPTIDE HUB</span>
-      <h1 style="font-size:clamp(28px,4vw,44px);margin:14px 0 8px">High-Purity Research Peptides — Delivered Fast</h1>
-      <p style="color:var(--muted);font-size:clamp(14px,2.2vw,18px);max-width:780px">Built for scientists and researchers who need consistent results: clean labels, clear doses, and fast, reliable fulfillment. Research-grade only. Not for human consumption.</p>
-      <div style="display:flex;gap:12px;margin-top:18px;flex-wrap:wrap">
-        <a class="btn" href="#products">Browse Products</a>
-        <a class="btn btn-outline" href="checkout.html">Go to Checkout</a>
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-card">
+        <span class="eyebrow">RESEARCH PEPTIDES</span>
+        <h1 class="h1">99%+ HPLC, Lab‑Verified Batches — <span style="white-space:nowrap">Ships in 24 Hours*</span></h1>
+        <p class="sub">Built for scientists who need consistent results: clean labels, clear doses, and reliable fulfillment. <strong>Research‑grade only. Not for human consumption.</strong></p>
+        <div class="cta-row">
+          <a class="btn" href="#products">Browse Products</a>
+          <a class="btn btn-outline" href="checkout.html">Go to Checkout</a>
+        </div>
+        <div class="trustbar">
+          <div class="trust-item"><span class="dot"></span><div><strong>Third‑party verification</strong> for identity & potency</div></div>
+          <div class="trust-item"><span class="dot"></span><div><strong>COA available</strong> for every lot (on request)</div></div>
+          <div class="trust-item"><span class="dot"></span><div><strong>Discreet packaging</strong> with clear labels</div></div>
+          <div class="trust-item"><span class="dot"></span><div><strong>US-based support</strong> for researchers</div></div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="products" class="container">
-    <h3 style="font-weight:800;letter-spacing:.04em;margin:0 0 12px;color:#0f172a">PRODUCT CATALOG</h3>
-    <div style="display:grid;gap:16px;grid-template-columns:repeat(4,minmax(0,1fr))">
-      <article class="card">
-        <div class="thumb"><img src="assets/retatrutide.png" alt="Retatrutide 10 mg"></div>
-        <div class="body">
-          <span class="tag">10 mg</span>
-          <div class="title">Retatrutide</div>
-          <div class="desc">Triple receptor agonist — research only.</div>
-          <div class="price">$289.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="RET-10" data-name="Retatrutide" data-size="10 mg" data-price="289.99">Buy Now</a></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="thumb"><img src="assets/bpc-157.png" alt="BPC-157 5 mg"></div>
-        <div class="body">
-          <span class="tag">5 mg</span>
-          <div class="title">BPC-157</div>
-          <div class="desc">Pentadecapeptide — 99% HPLC, research only.</div>
-          <div class="price">$119.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="BPC-5" data-name="BPC-157" data-size="5 mg" data-price="119.99">Buy Now</a></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="thumb"><img src="assets/tb-500.png" alt="TB-500 5 mg"></div>
-        <div class="body">
-          <span class="tag">5 mg</span>
-          <div class="title">TB 500</div>
-          <div class="desc">Thymosin β4 fragment — research only.</div>
-          <div class="price">$149.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="TB500-5" data-name="TB 500" data-size="5 mg" data-price="149.99">Buy Now</a></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="thumb"><img src="assets/hcg.png" alt="hCG 5000 IU"></div>
-        <div class="body">
-          <span class="tag">5000 IU</span>
-          <div class="title">hCG</div>
-          <div class="desc">Recombinant glycoprotein hormone — research only.</div>
-          <div class="price">$79.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="HCG-5000" data-name="hCG" data-size="5000 IU" data-price="79.99">Buy Now</a></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="thumb"><img src="assets/bac-water.png" alt="Bacteriostatic Water 10 mL"></div>
-        <div class="body">
-          <span class="tag">10 mL</span>
-          <div class="title">Bacteriostatic Water</div>
-          <div class="desc">Sterile water with 0.9% benzyl alcohol.</div>
-          <div class="price">$9.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="BAC-10" data-name="Bacteriostatic Water" data-size="10 mL" data-price="9.99">Buy Now</a></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="thumb"><img src="assets/ipamorelin.png" alt="Ipamorelin 5 mg"></div>
-        <div class="body">
-          <span class="tag">5 mg</span>
-          <div class="title">Ipamorelin</div>
-          <div class="desc">Selective GHRP analog — research only.</div>
-          <div class="price">$89.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="IPA-5" data-name="Ipamorelin" data-size="5 mg" data-price="89.99">Buy Now</a></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="thumb"><img src="assets/melanotan-2.png" alt="Melanotan 2 10 mg"></div>
-        <div class="body">
-          <span class="tag">10 mg</span>
-          <div class="title">Melanotan 2</div>
-          <div class="desc">Cyclized heptapeptide — research only.</div>
-          <div class="price">$99.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="MT2-10" data-name="Melanotan 2" data-size="10 mg" data-price="99.99">Buy Now</a></div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="thumb"><img src="assets/cjc-1295-dac.png" alt="CJC-1295 DAC 5 mg"></div>
-        <div class="body">
-          <span class="tag">5 mg</span>
-          <div class="title">CJC-1295 DAC</div>
-          <div class="desc">Peptide analog of GHRH (DAC) — research only.</div>
-          <div class="price">$129.99</div>
-          <div style="display:flex;gap:10px"><a class="btn add-to-cart" href="checkout.html" data-sku="CJC1295-5" data-name="CJC-1295 DAC" data-size="5 mg" data-price="129.99">Buy Now</a></div>
-        </div>
-      </article>
+    <!-- URGENCY BAND -->
+    <div class="band">
+      <div><strong>Order within <span id="cutoff">3h 12m</span> for same‑day handoff.</strong> *Weekdays before 2pm CT.</div>
+      <a class="btn btn-outline" href="#products">Shop Now</a>
     </div>
-  </section>
 
-  <section class="container">
-    <div class="panel">
-      <h3 style="margin-top:0">Why Choose Peptide Hub?</h3>
-      <div style="display:grid;gap:8px;grid-template-columns:repeat(3,1fr)}" class="list">
-        <div style="display:flex;gap:10px;align-items:flex-start"><span style="width:10px;height:10px;background:var(--green);border-radius:50%;margin-top:8px"></span><div><strong>99%+ HPLC</strong> on research peptides.</div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><span style="width:10px;height:10px;background:var(--green);border-radius:50%;margin-top:8px"></span><div><strong>Third-party verification</strong> for identity and potency.</div></div>
-        <div style="display:flex;gap:10px;align-items:flex-start"><span style="width:10px;height:10px;background:var(--green);border-radius:50%;margin-top:8px"></span><div><strong>Clear labeling & COA on request</strong> for every lot.</div></div>
+    <!-- PRODUCTS -->
+    <section id="products">
+      <h3 style="font-weight:900;letter-spacing:.04em;margin:0 0 12px;color:#0f172a">PRODUCT CATALOG</h3>
+      <div class="grid">
+        <!-- Retatrutide -->
+        <article class="card">
+          <span class="stock">Only 7 left</span>
+          <div class="thumb"><img src="assets/retatrutide.png" alt="Retatrutide 10 mg"></div>
+          <div class="body">
+            <span class="tag">10 mg</span>
+            <div class="title">Retatrutide</div>
+            <div class="desc">Triple receptor agonist — research only.</div>
+            <div class="price-row">
+              <div class="price">$289.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="RET-10" data-name="Retatrutide" data-size="10 mg" data-price="289.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- BPC-157 -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/bpc-157.png" alt="BPC-157 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">BPC-157</div>
+            <div class="desc">Pentadecapeptide — 99% HPLC, research only.</div>
+            <div class="price-row">
+              <div class="price">$119.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="BPC-5" data-name="BPC-157" data-size="5 mg" data-price="119.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- TB-500 -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/tb-500.png" alt="TB-500 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">TB 500</div>
+            <div class="desc">Thymosin β4 fragment — research only.</div>
+            <div class="price-row">
+              <div class="price">$149.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="TB500-5" data-name="TB 500" data-size="5 mg" data-price="149.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- hCG -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/hcg.png" alt="hCG 5000 IU"></div>
+          <div class="body">
+            <span class="tag">5000 IU</span>
+            <div class="title">hCG</div>
+            <div class="desc">Recombinant glycoprotein hormone — research only.</div>
+            <div class="price-row">
+              <div class="price">$79.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="HCG-5000" data-name="hCG" data-size="5000 IU" data-price="79.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- BAC Water -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/bac-water.png" alt="Bacteriostatic Water 10 mL"></div>
+          <div class="body">
+            <span class="tag">10 mL</span>
+            <div class="title">Bacteriostatic Water</div>
+            <div class="desc">Sterile water with 0.9% benzyl alcohol.</div>
+            <div class="price-row">
+              <div class="price">$9.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="BAC-10" data-name="Bacteriostatic Water" data-size="10 mL" data-price="9.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- Ipamorelin -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/ipamorelin.png" alt="Ipamorelin 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">Ipamorelin</div>
+            <div class="desc">Selective GHRP analog — research only.</div>
+            <div class="price-row">
+              <div class="price">$89.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="IPA-5" data-name="Ipamorelin" data-size="5 mg" data-price="89.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- Melanotan 2 -->
+        <article class="card">
+          <span class="stock">In stock</span>
+          <div class="thumb"><img src="assets/melanotan-2.png" alt="Melanotan 2 10 mg"></div>
+          <div class="body">
+            <span class="tag">10 mg</span>
+            <div class="title">Melanotan 2</div>
+            <div class="desc">Cyclized heptapeptide — research only.</div>
+            <div class="price-row">
+              <div class="price">$99.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="MT2-10" data-name="Melanotan 2" data-size="10 mg" data-price="99.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
+        <!-- CJC-1295 DAC -->
+        <article class="card">
+          <span class="stock">Low stock</span>
+          <div class="thumb"><img src="assets/cjc-1295-dac.png" alt="CJC-1295 DAC 5 mg"></div>
+          <div class="body">
+            <span class="tag">5 mg</span>
+            <div class="title">CJC-1295 DAC</div>
+            <div class="desc">Peptide analog of GHRH (DAC) — research only.</div>
+            <div class="price-row">
+              <div class="price">$129.99</div>
+              <a class="coa" href="legal.html#contact">Request COA</a>
+            </div>
+            <div style="display:flex;gap:10px">
+              <a class="btn add-to-cart" href="checkout.html" data-sku="CJC1295-5" data-name="CJC-1295 DAC" data-size="5 mg" data-price="129.99">Buy Now</a>
+            </div>
+          </div>
+        </article>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="container">
-    <div class="panel" style="display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-      <div><strong>Limited release:</strong> Small-batch inventory refresh weekly.</div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a class="btn" href="checkout.html">Checkout</a>
-        <a class="btn btn-outline" href="#products">Add More</a>
+    <!-- WHY CHOOSE -->
+    <section style="margin-top:16px">
+      <div class="panel">
+        <h3 style="margin:0 0 10px">Why Choose Peptide Hub?</h3>
+        <div class="why">
+          <div class="why-item"><span class="dot"></span><div><strong>99%+ HPLC</strong> on research peptides.</div></div>
+          <div class="why-item"><span class="dot"></span><div><strong>Batch‑level traceability</strong> & clean labels.</div></div>
+          <div class="why-item"><span class="dot"></span><div><strong>COA on request</strong> for every lot.</div></div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- REVIEWS (service-focused, compliant) -->
+    <section style="margin-top:16px">
+      <h3 style="margin:0 0 10px">What Researchers Say</h3>
+      <div class="reviews">
+        <div class="review">“Fast shipping and excellent packaging. Labels are clear and easy to catalog.”<div class="cite">— J. Patel, Lab Manager</div></div>
+        <div class="review">“Consistent purity and responsive support. Exactly what our lab needs.”<div class="cite">— R. Nguyen, PhD</div></div>
+        <div class="review">“COA access on request is a big plus. Reordering is a breeze.”<div class="cite">— A. Rivera, Research Tech</div></div>
+      </div>
+    </section>
+
+    <!-- SECONDARY CTA BAND -->
+    <section style="margin-top:16px">
+      <div class="band">
+        <div><strong>Small‑batch inventory refresh weekly.</strong> Don’t miss the next drop.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn" href="checkout.html">Checkout</a>
+          <a class="btn btn-outline" href="#products">Add More</a>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <footer>
-    <div class="legal"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
+    <div class="legal">
+      <strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.
+      <div class="links">
+        <a href="legal.html#privacy">Privacy Policy</a> ·
+        <a href="legal.html#terms">Terms &amp; Conditions</a> ·
+        <a href="legal.html#disclaimer">Disclaimer</a> ·
+        <a href="legal.html#refunds">Returns &amp; Refunds</a> ·
+        <a href="legal.html#shipping">Shipping</a> ·
+        <a href="admin.html">Track Your Package</a>
+      </div>
+    </div>
   </footer>
 
+  <!-- Cutoff timer -->
   <script>
-    // Lightweight cart using localStorage
+    (function(){
+      var now=new Date();
+      var cutoff=new Date(now);
+      cutoff.setHours(14,0,0,0); // 2pm local (approx CT)
+      if(now>cutoff){cutoff.setDate(cutoff.getDate()+1);}
+      function tick(){
+        var n=new Date();
+        var diff=cutoff-n;
+        if(diff<0){document.getElementById('cutoff').textContent='—';return;}
+        var h=Math.floor(diff/36e5), m=Math.floor((diff%36e5)/6e4);
+        document.getElementById('cutoff').textContent=h+'h '+m+'m';
+      }
+      tick(); setInterval(tick,3e4);
+    })();
+  </script>
+
+  <!-- Add-to-cart (localStorage) -->
+  <script>
     (function(){
       function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
-      function saveCart(c){ localStorage.setItem('ph_cart', JSON.stringify(c)); }
+      function saveCart(c){ localStorage.setItem('ph_cart', JSON.stringify(c)); window.dispatchEvent(new Event('storage')); }
       function addToCart(item){
         var cart = getCart();
         var existing = cart.find(x => x.sku === item.sku && x.size === item.size);
         if(existing){ existing.qty += item.qty; } else { cart.push(item); }
         saveCart(cart);
+        document.dispatchEvent(new Event('ph_cart_updated'));
       }
-      window.ph_addToCart = addToCart;
-
       document.querySelectorAll('.add-to-cart').forEach(function(a){
         a.addEventListener('click', function(ev){
           var el = ev.currentTarget;
@@ -207,32 +350,30 @@
             qty:  1
           };
           addToCart(item);
-          // proceed to checkout (href already points there)
+          // natural navigation continues to checkout.html
         }, {passive:true});
       });
     })();
   </script>
 
-
-<script>
-(function(){
-  function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
-  function countItems(){ return getCart().reduce(function(n,i){ return n + (i.qty||0); }, 0); }
-  function renderMiniCart(){
-    var span = document.getElementById('mini-cart-count');
-    if(!span) return;
-    span.textContent = countItems();
-  }
-  window.addEventListener('storage', function(e){ if(e.key === 'ph_cart') renderMiniCart(); });
-  document.addEventListener('ph_cart_updated', renderMiniCart);
-  document.addEventListener('DOMContentLoaded', renderMiniCart);
-  // If an add-to-cart is clicked on this page, update count immediately
-  document.addEventListener('click', function(e){
-    var a = e.target && e.target.closest ? e.target.closest('.add-to-cart') : null;
-    if(a){ setTimeout(function(){ document.dispatchEvent(new Event('ph_cart_updated')); }, 0); }
-  });
-})();
-</script>
-
+  <!-- Mini cart script -->
+  <script>
+    (function(){
+      function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
+      function countItems(){ return getCart().reduce(function(n,i){ return n + (i.qty||0); }, 0); }
+      function renderMiniCart(){
+        var span = document.getElementById('mini-cart-count');
+        if(!span) return;
+        span.textContent = countItems();
+      }
+      window.addEventListener('storage', function(e){ if(e.key === 'ph_cart') renderMiniCart(); });
+      document.addEventListener('ph_cart_updated', renderMiniCart);
+      document.addEventListener('DOMContentLoaded', renderMiniCart);
+      document.addEventListener('click', function(e){
+        var a = e.target && e.target.closest ? e.target.closest('.add-to-cart') : null;
+        if(a){ setTimeout(function(){ document.dispatchEvent(new Event('ph_cart_updated')); }, 0); }
+      });
+    })();
+  </script>
 </body>
 </html>
