@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Peptide Hub — Research Peptides</title>
-  <!-- Version: White Theme v3.1 (Conversion-Optimized + Mini Cart) -->
+  <!-- Version: White Theme v3.2 (Conversion-Optimized + Mini Cart + Price-from-UI) -->
   <style>
     :root{
       --green:#1CB346;
@@ -396,11 +396,18 @@
       document.querySelectorAll('.add-to-cart').forEach(function(a){
         a.addEventListener('click', function(ev){
           var el = ev.currentTarget;
+          var card = el.closest('.card');
+          var priceText = card && card.querySelector('.price') ? card.querySelector('.price').textContent : '';
+          var priceParsed = parseFloat((priceText || '').replace(/[^0-9.]/g,''));
+          if (isNaN(priceParsed)) {
+            // fallback to data-price if parsing fails
+            priceParsed = parseFloat(el.dataset.price || '0');
+          }
           var item = {
             sku:  el.dataset.sku,
             name: el.dataset.name,
             size: el.dataset.size,
-            price: parseFloat(el.dataset.price),
+            price: priceParsed,
             qty:  1
           };
           addToCart(item);
