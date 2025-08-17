@@ -1,250 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Payment Instructions — Peptide Hub</title>
   <style>
     :root{
-      --green:#1CB346; --green-d:#0f6b2b; --ink:#0f172a; --muted:#5b6472;
-      --card:#ffffff; --radius:22px; --shadow:0 10px 30px rgba(0,0,0,.08); --border:#eef2f0;
+      --green:#1CB346;
+      --green-d:#0f6b2b;
+      --ink:#0f172a;
+      --muted:#5b6472;
+      --card:#ffffff;
+      --radius:22px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --border:#eef2f0;
+      --bg:#ffffff;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:#fff;color:var(--ink);font-family:ui-sans-serif,-apple-system,Inter,Roboto,Arial}
-    a{text-decoration:none;color:inherit} img{max-width:100%;display:block}
-    .header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--green),var(--green-d));color:#fff;border-bottom:1px solid rgba(0,0,0,.04)}
-    .nav{max-width:900px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:18px}
-    .nav img.logo{height:36px}.nav .spacer{flex:1}.nav a{font-weight:700;padding:10px 12px;border-radius:14px;color:#fff}
-    .nav a:hover{background:rgba(255,255,255,.12)}
-    .btn{display:inline-block;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:800;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s}
-    .btn:hover{background:#17a03f;transform:translateY(-1px)} .btn-outline{background:#fff;color:var(--green);border:2px solid var(--green)}
-    .container{max-width:900px;margin:24px auto;padding:0 18px}
-    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:20px}
-    footer{max-width:900px;margin:28px auto 44px;padding:0 18px;color:#334155}
-    footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial;-webkit-font-smoothing:antialiased;overflow-x:hidden;max-width:100%}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    .container{max-width:1000px;margin:0 auto;padding:0 16px}
+    /* Compact header like index */
+    .header{
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: linear-gradient(90deg, var(--green), var(--green-d));
+      color: #fff;
+      border-bottom: 1px solid rgba(0,0,0,.04);
+    }
+    .header a{ color:#fff; }
+    .nav-compact{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 0;
+      padding-top:calc(12px + env(safe-area-inset-top));
+    }
+    .nav-compact .brand{ display:flex; align-items:center; }
+    .nav-compact .brand img.logo{ height:44px; width:auto; display:block; }
+    .nav-compact .actions{ display:flex; gap:10px; align-items:center; }
+    .nav-btn{
+      font-weight:800;color:#fff;padding:10px 14px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.10);
+      backdrop-filter:saturate(1.1);white-space:nowrap;
+    }
+    .nav-btn:hover{ background:rgba(255,255,255,.18); }
+    @media (max-width:420px){ .nav-btn{ padding:8px 12px; font-size:.95rem } }
+    /* Panels / layout */
+    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:16px}
+    main{margin:20px 0 28px}
+    h2,h3{margin:6px 0 12px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;border:0;cursor:pointer;text-decoration:none}
+    .btn:hover{background:#17a03f;transform:translateY(-1px)}
+    .btn[disabled]{opacity:.6;cursor:not-allowed;transform:none}
+    .instructions ol{margin-left:18px;padding-left:0}
+    .instructions li{margin-bottom:6px;line-height:1.5}
+    .hint{color:#64748b;font-size:.9rem;margin-top:4px}
   </style>
 </head>
 <body>
-  <header class="header">
-    <nav class="nav">
-      <a href="index.html"><img class="logo" src="assets/logo.png" alt="Peptide Hub logo" /></a>
-      <div class="spacer"></div>
-      <a href="index.html">Home</a>
-      <a href="checkout.html">Checkout</a>
-      <a href="legal.html">Legal</a>
-    </nav>
-  </header>
-
-  <main class="container">
-    <div class="panel" id="instructions">
-      <h1 id="title">Payment Instructions</h1>
-      <div style="color:var(--muted)" id="sub"></div>
-      <div id="content" style="margin-top:14px"></div>
-      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
-        <a class="btn" href="checkout.html">Back to Checkout</a>
-        <a class="btn btn-outline" href="index.html">Continue Shopping</a>
-      </div>
+<header class="header">
+  <div class="container nav-compact">
+    <a aria-label="Peptide Hub — Home" class="brand" href="/">
+      <img class="logo" src="assets/logo.png" alt="Peptide Hub logo">
+    </a>
+    <div class="actions">
+      <a class="nav-btn" href="/admin">Track Your Package</a>
+      <a class="nav-btn" href="/checkout" id="mini-cart-link">Cart (<span id="mini-cart-count">0</span>)</a>
     </div>
-  </main>
-
-  <script>
-  // ------- Config -------
-  const CONFIG = {
-    cashapp:  { handle: "$PeptideCo" },
-    venmo:    { handle: "@PeptideCo" },
-    zelle:    { email : "support@peptideco.com", name: "Peptide Hub LLC" },
-    bitcoin:  { address: "1PeptideCoAddressGoesHere123..." }
-  };
-
-  // ------- Read context from URL / localStorage -------
-  const qs = new URLSearchParams(location.search);
-  const method = (qs.get('method') || '').toLowerCase();
-  // prefer real UUID from localStorage (set after order-create), otherwise show short code from URL
-  const orderId = localStorage.getItem('orderId') || qs.get('order') || 'PC000000';
-  const total   = qs.get('total') || '0.00';
-
-  // ------- Render instructions -------
-  const methodNames = {cashapp:'Cash App', venmo:'Venmo', zelle:'Zelle', bitcoin:'Bitcoin'};
-  const title = document.getElementById('title');
-  const sub   = document.getElementById('sub');
-  const content = document.getElementById('content');
-
-  title.textContent = `${methodNames[method] || 'Payment'} — Step by Step`;
-  sub.innerHTML = `Order <span style="background:rgba(28,179,70,.12);padding:2px 8px;border-radius:10px">${orderId}</span> · Total <span style="background:rgba(28,179,70,.12);padding:2px 8px;border-radius:10px">$${total}</span>`;
-
-  function pill(label, value){
-    return `<div style="background:#f7faf8;border:1px solid #e6e9ee;border-radius:12px;padding:12px;margin-top:10px">
-      <strong>${label}:</strong>
-      <span style="background:#f3f6f4;border:1px solid #dbe7df;padding:6px 8px;border-radius:10px;font-family:ui-monospace,Menlo,Consolas,monospace">${value}</span>
-    </div>`;
+  </div>
+</header>
+<main class="container">
+  <h2 style="margin:14px 0">Payment — Step by Step</h2>
+  <section class="panel" id="instructions-section">
+    <div>
+      Order <span id="order-id">–</span> · Total <span id="order-total">–</span>
+    </div>
+    <div id="instructions" class="instructions" style="margin-top:12px"></div>
+    <div id="unrecognized" style="display:none;margin-top:12px;color:#b91c1c;font-weight:600">
+      Payment method not recognized. Please go back and choose a valid payment method.
+    </div>
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href="/checkout">Back to Checkout</a>
+      <a class="btn" href="/">Continue Shopping</a>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="container" style="margin-bottom:64px">
+    <div class="legal" style="background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px;color:#334155"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
+  </div>
+</footer>
+<script>
+// Payment instructions page script
+(function(){
+  // Mini cart count from localStorage
+  function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
+  function renderMini(){ var span = document.getElementById('mini-cart-count'); if(!span) return;
+    span.textContent = getCart().reduce((n,i)=>n+(i.qty||0),0);
   }
-
-  (function draw(){
-    let html = '';
-    switch(method){
-      case 'cashapp':
-        html = `${pill('Handle', CONFIG.cashapp.handle)}
-          <ol style="margin:10px 0 0;padding-left:18px">
-            <li>Open Cash App and tap <strong>Pay</strong>.</li>
-            <li>Enter <strong>$${total}</strong> and tap <strong>Pay</strong>.</li>
-            <li>In the <em>For</em> note, type: <strong>${orderId}</strong>.</li>
-            <li>Send to <strong>${CONFIG.cashapp.handle}</strong>.</li>
-            <li>Keep your receipt screen for records.</li>
-          </ol>
-          <p style="color:var(--muted)">ETA: confirmations typically within <strong>0–6 hours</strong>.</p>`;
-        break;
-      case 'venmo':
-        html = `${pill('Username', CONFIG.venmo.handle)}
-          <ol style="margin:10px 0 0;padding-left:18px">
-            <li>Open Venmo and tap <strong>Pay/Request</strong>.</li>
-            <li>Search <strong>${CONFIG.venmo.handle}</strong>.</li>
-            <li>Enter <strong>$${total}</strong>.</li>
-            <li>Memo: <strong>${orderId}</strong>.</li>
-            <li>Submit the payment.</li>
-          </ol>
-          <p style="color:var(--muted)">ETA: confirmations typically within <strong>0–6 hours</strong>.</p>`;
-        break;
-      case 'zelle':
-        html = `${pill('Recipient', CONFIG.zelle.name)}${pill('Email', CONFIG.zelle.email)}
-          <ol style="margin:10px 0 0;padding-left:18px">
-            <li>Open your banking app and choose <strong>Zelle</strong>.</li>
-            <li>Add: <strong>${CONFIG.zelle.name}</strong> &lt;<strong>${CONFIG.zelle.email}</strong>&gt;.</li>
-            <li>Enter <strong>$${total}</strong>.</li>
-            <li>Memo: <strong>${orderId}</strong>.</li>
-            <li>Send and save your confirmation.</li>
-          </ol>
-          <p style="color:var(--muted)">ETA: up to <strong>24 hours</strong> depending on bank.</p>`;
-        break;
-      case 'bitcoin':
-        html = `${pill('BTC Address', CONFIG.bitcoin.address)}
-          <ol style="margin:10px 0 0;padding-left:18px">
-            <li>Open your wallet and choose <strong>Send</strong>.</li>
-            <li>Paste: <strong>${CONFIG.bitcoin.address}</strong>.</li>
-            <li>Enter <strong>$${total}</strong> (or equivalent BTC).</li>
-            <li>Memo (if possible): <strong>${orderId}</strong>.</li>
-            <li>Submit and wait for <strong>1–2 confirmations</strong>.</li>
-          </ol>
-          <p style="color:var(--muted)">ETA: usually <strong>10–60 minutes</strong>.</p>`;
-        break;
-      default:
-        html = `<p>Payment method not recognized. <a href="checkout.html">Go back</a> and choose a method.</p>`;
-    }
-    content.innerHTML = html;
-  })();
-
-  // ------- Helpers for proof upload -------
-  async function fileToDataUrl(file){
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result);
-      r.onerror = rej;
-      r.readAsDataURL(file);
-    });
+  document.addEventListener('DOMContentLoaded', renderMini);
+  document.addEventListener('ph_cart_updated', renderMini);
+  // Parse query params
+  function qs(name){ return new URLSearchParams(window.location.search).get(name); }
+  var method = qs('method');
+  var orderId = qs('order') || localStorage.getItem('orderId');
+  var total = qs('total') || localStorage.getItem('orderTotal');
+  // Update order details
+  var orderEl = document.getElementById('order-id'); if(orderEl) orderEl.textContent = orderId || '—';
+  var totalEl = document.getElementById('order-total'); if(totalEl) totalEl.textContent = total ? '$'+Number(total).toFixed(2) : '—';
+  var instructionsEl = document.getElementById('instructions');
+  var unrecEl = document.getElementById('unrecognized');
+  // Build instructions based on method
+  var body = '';
+  var totalVal = total ? Number(total).toFixed(2) : '';
+  if(method === 'cashapp'){
+    body = `
+      <h3>Cash App Instructions</h3>
+      <ol>
+        <li>Open Cash App and send the total <strong>$${totalVal}</strong> to <strong>$PeptideCo</strong>.</li>
+        <li>In the note, include your order ID <strong>${orderId}</strong>.</li>
+        <li>After sending, email or text your payment proof (receipt or screenshot) to <strong>support@peptideco.com</strong> or our phone number.</li>
+        <li>We’ll email you once we receive your payment and again when your tracking number is available.</li>
+      </ol>`;
+  } else if(method === 'venmo'){
+    body = `
+      <h3>Venmo Instructions</h3>
+      <ol>
+        <li>Open Venmo and pay the total <strong>$${totalVal}</strong> to <strong>@PeptideCo</strong>.</li>
+        <li>Add a memo with your order ID <strong>${orderId}</strong>.</li>
+        <li>After sending, email or text your payment proof (receipt or screenshot) to <strong>support@peptideco.com</strong> or our phone number.</li>
+        <li>We’ll email you once we receive your payment and again when your tracking number is available.</li>
+      </ol>`;
+  } else if(method === 'zelle'){
+    body = `
+      <h3>Zelle Instructions</h3>
+      <ol>
+        <li>Send the total <strong>$${totalVal}</strong> via Zelle to <strong>support@peptideco.com</strong>.</li>
+        <li>Include your order ID <strong>${orderId}</strong> in the memo.</li>
+        <li>After sending, email or text your payment proof (receipt or screenshot) to <strong>support@peptideco.com</strong> or our phone number.</li>
+        <li>We’ll email you once we receive your payment and again when your tracking number is available.</li>
+      </ol>`;
+  } else if(method === 'bitcoin'){
+    body = `
+      <h3>Bitcoin Instructions</h3>
+      <ol>
+        <li>We will provide a unique Bitcoin address for your order. Please check your order confirmation email for this address.</li>
+        <li>Send the equivalent of <strong>$${totalVal}</strong> in BTC to the provided address.</li>
+        <li>If your wallet allows, include your order ID <strong>${orderId}</strong> as a memo.</li>
+        <li>After sending, email or text your transaction ID or screenshot to <strong>support@peptideco.com</strong> or our phone number.</li>
+        <li>We’ll email you once we receive your payment and again when your tracking number is available.</li>
+      </ol>`;
   }
-  function showToast(msg, ok=false){
-    const el = document.createElement('div');
-    el.textContent = msg;
-    el.style.cssText = `
-      position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
-      background:${ok?'#0f6b2b':'#b91c1c'};color:#fff;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow);z-index:9999
-    `;
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(), 2800);
+  if(body){
+    if(instructionsEl) instructionsEl.innerHTML = body;
+    if(unrecEl) unrecEl.style.display = 'none';
+  } else {
+    if(instructionsEl) instructionsEl.innerHTML = '';
+    if(unrecEl) unrecEl.style.display = 'block';
   }
-
-  // ------- Inject proof upload panel -------
-  (function mountProofPanel(){
-    const amount = Number(total || '0').toFixed(2);
-    const panel = document.createElement('div');
-    panel.className = 'panel';
-    panel.style.marginTop = '16px';
-    panel.innerHTML = `
-      <h3 style="margin:0 0 10px">Upload Payment Proof</h3>
-      <p style="color:var(--muted);margin:0 0 12px">Upload a screenshot/receipt so we can verify your payment faster.</p>
-
-      <form id="proof-form" style="display:grid;gap:12px;grid-template-columns:1fr 1fr" novalidate>
-        <label style="display:flex;flex-direction:column;gap:6px">
-          <span style="font-weight:700">Order ID</span>
-          <input id="orderId" type="text" value="${orderId}" style="border:1px solid var(--border);border-radius:12px;padding:10px">
-          <small style="color:var(--muted)">If this shows a short code (e.g., PC123456), that’s fine.</small>
-        </label>
-        <label style="display:flex;flex-direction:column;gap:6px">
-          <span style="font-weight:700">Payment Method</span>
-          <input id="method" type="text" value="${(method||'').toUpperCase()}" style="border:1px solid var(--border);border-radius:12px;padding:10px">
-        </label>
-
-        <label style="display:flex;flex-direction:column;gap:6px">
-          <span style="font-weight:700">Your Email</span>
-          <input id="email" type="email" placeholder="you@email.com" style="border:1px solid var(--border);border-radius:12px;padding:10px">
-        </label>
-        <label style="display:flex;flex-direction:column;gap:6px">
-          <span style="font-weight:700">Amount (USD)</span>
-          <input id="amount" type="number" step="0.01" min="0" value="${amount}" style="border:1px solid var(--border);border-radius:12px;padding:10px">
-        </label>
-
-        <label style="grid-column:1/-1;display:flex;flex-direction:column;gap:6px">
-          <span style="font-weight:700">Screenshot / Receipt (image)</span>
-          <input id="screenshot" type="file" accept="image/*" required
-                 style="border:1px dashed #d1e7d9;background:#f7faf8;border-radius:12px;padding:16px">
-          <small style="color:var(--muted)">Accepted: JPG, PNG, HEIC (from iPhone). Max ~10MB recommended.</small>
-        </label>
-
-        <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <button type="submit" class="btn" id="submitBtn">Submit Proof</button>
-          <span id="status" style="color:var(--muted)"></span>
-        </div>
-      </form>
-    `;
-    document.querySelector('main').appendChild(panel);
-
-    // Handle submit → POST to Netlify function
-    const form = panel.querySelector('#proof-form');
-    const status = panel.querySelector('#status');
-    const submitBtn = panel.querySelector('#submitBtn');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      status.textContent = '';
-
-      const _orderId = panel.querySelector('#orderId').value.trim();
-      const _email   = panel.querySelector('#email').value.trim();
-      const _method  = panel.querySelector('#method').value.trim();
-      const _amount  = parseFloat(panel.querySelector('#amount').value);
-      const file     = panel.querySelector('#screenshot').files[0];
-
-      if (!_orderId || !file) {
-        status.textContent = 'Order ID and image are required.'; status.style.color = '#b45309'; return;
-      }
-      if (!/^image\//.test(file.type)) {
-        status.textContent = 'Please choose an image file.'; status.style.color = '#b45309'; return;
-      }
-
-      submitBtn.disabled = true; submitBtn.textContent = 'Uploading…';
-      status.textContent = 'Uploading your proof…'; status.style.color = 'var(--muted)';
-
-      try {
-        const imageData = await fileToDataUrl(file);
-        const resp = await fetch('/.netlify/functions/upload-proof', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ orderId:_orderId, email:_email, method:_method, amount:_amount, imageData })
-        });
-
-        const data = await resp.json().catch(()=> ({}));
-        if (!resp.ok || !data.ok) throw new Error(data.error || 'Upload failed');
-
-        showToast('Proof uploaded! Thank you.', true);
-        form.reset();
-      } catch (err) {
-        console.error(err);
-        status.textContent = 'Upload failed: ' + err.message;
-        status.style.color = '#b91c1c';
-      } finally {
-        submitBtn.disabled = false; submitBtn.textContent = 'Submit Proof';
-      }
-    });
-  })();
-  </script>
+})();
+</script>
 </body>
 </html>
-
