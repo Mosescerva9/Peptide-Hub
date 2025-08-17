@@ -1,24 +1,35 @@
+-- Supabase SQL: create an orders table for offline payments/fulfillment
+create extension if not exists pgcrypto; -- for gen_random_uuid()
 
 create table if not exists orders (
-  id bigint generated always as identity primary key,
-  order_id text unique not null,
-  status text not null default 'Pending_Payment',
-  method text not null,
-  amount_usd numeric(10,2) not null,
-  btc_amount numeric(18,8),
-  customer_email text not null,
-  customer_name text,
-  shipping_json jsonb not null,
-  items_json jsonb not null,
-  supplier_order_id text,
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  order_id text not null unique,
+  email text not null,
+  phone text,
+  ship_name text not null,
+  ship_address1 text not null,
+  ship_address2 text,
+  ship_city text not null,
+  ship_state text not null,
+  ship_postal text not null,
+  ship_country text not null,
+  billing_same boolean not null default true,
+  bill_name text,
+  bill_address1 text,
+  bill_address2 text,
+  bill_city text,
+  bill_state text,
+  bill_postal text,
+  bill_country text,
+  items jsonb not null,
+  payment_method text not null,
+  total numeric(10,2) not null,
+  status text not null default 'pending',  -- pending | paid | shipped | cancelled
   tracking_number text,
-  proof_urls jsonb default '[]'::jsonb,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
+  carrier text,
+  tracking_url text
 );
-create or replace function touch_orders()
-returns trigger language plpgsql as $$
-begin new.updated_at = now(); return new; end $$;
-drop trigger if exists trg_touch_orders on orders;
-create trigger trg_touch_orders before update on orders
-for each row execute procedure touch_orders();
+
+-- Helpful index
+create index if not exists orders_created_at_idx on orders (created_at desc);
