@@ -394,66 +394,74 @@
     submitBtn.disabled = !(cartOk && selected && requiredFilled());
   }
   document.addEventListener('input', updateSubmitDisabled);
-  // Submit handler with email sending
-  submitBtn.addEventListener('click', async function(){
-    if(submitBtn.disabled) return;
-    // Save checkout info
-    var data = {};
-    ['email','phone',
-     'ship_name','ship_address1','ship_address2','ship_city','ship_state','ship_postal','ship_country',
-     'bill_name','bill_address1','bill_address2','bill_city','bill_state','bill_postal','bill_country'
-    ].forEach(function(id){ var el=document.getElementById(id); if(el) data[id]=el.value; });
-    data['same_billing']=chk.checked;
-    saveCheckout(data);
-    // Calculate order details
-    var orderId = 'PC' + Math.floor(100000 + Math.random()*900000);
-    var total = 0; getCart().forEach(function(i){ total += (i.price*i.qty); });
-    // Persist order info
-    localStorage.setItem('orderId', orderId);
-    localStorage.setItem('orderTotal', total.toFixed(2));
-    localStorage.setItem('method', selected);
-    // Build payment instructions based on chosen method
-    var paymentMessage = '';
-    if(selected === 'cashapp'){
-      paymentMessage = `<p>Open Cash App and send the total <strong>$${total.toFixed(2)}</strong> to <strong>$PeptideCo</strong>. In the note include your order ID <strong>${orderId}</strong>. After you send the payment, please email or text us your receipt to confirm your payment. You will receive another email once your tracking number is available.</p>`;
-    } else if(selected === 'venmo'){
-      paymentMessage = `<p>Open Venmo and pay the total <strong>$${total.toFixed(2)}</strong> to <strong>@PeptideCo</strong>. Add a memo with your order ID <strong>${orderId}</strong>. Then email or text us your payment proof. You will receive another email once your tracking number is available.</p>`;
-    } else if(selected === 'zelle'){
-      paymentMessage = `<p>Send the total <strong>$${total.toFixed(2)}</strong> via Zelle to <strong>support@peptideco.com</strong>. Include <strong>${orderId}</strong> in the memo. Afterwards, email or text us your payment proof. You will receive another email once your tracking number is available.</p>`;
-    } else if(selected === 'bitcoin'){
-      paymentMessage = `<p>Use the Bitcoin address provided on the next page to send the total <strong>$${total.toFixed(2)}</strong> (converted to BTC). Include the order ID <strong>${orderId}</strong> if your wallet allows. Once you send the payment, email or text us your transaction ID or screenshot. You will receive another email once your tracking number is available.</p>`;
-    } else {
-      paymentMessage = `<p>Please follow the payment instructions on the next page.</p>`;
-    }
-    var toEmail = data.email;
-    var subject = `Your Peptide Hub order ${orderId} – Payment instructions`;
-    // Strip HTML tags for plain text
-    var tmp = document.createElement('div');
-    tmp.innerHTML = paymentMessage;
-    var textBody = tmp.textContent || tmp.innerText || '';
-    var htmlBody = `<div style=\"font-family:Arial,Helvetica,sans-serif\"><h2>Thank you for your order!</h2>${paymentMessage}</div>`;
-    // Send email via Netlify function
-    try {
-      await fetch('/.netlify/functions/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({
-          to: toEmail,
-          subject: subject,
-          text: textBody,
-          html: htmlBody
-        })
+    // Submit handler using order-create function
+    submitBtn.addEventListener('click', async function() {
+      if (submitBtn.disabled) return;
+      // Collect and save checkout info locally
+      var data = {};
+      [
+        'email','phone',
+        'ship_name','ship_address1','ship_address2','ship_city','ship_state','ship_postal','ship_country',
+        'bill_name','bill_address1','bill_address2','bill_city','bill_state','bill_postal','bill_country'
+      ].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) data[id] = el.value;
       });
-    } catch(err){
-      console.error('Failed to send email', err);
-    }
-    // Redirect to payment instructions page
-    var url = new URL('payment-instructions.html', window.location.href);
-    url.searchParams.set('method', selected);
-    url.searchParams.set('order', orderId);
-    url.searchParams.set('total', total.toFixed(2));
-    window.location.href = url.toString();
-  });
+      data['same_billing'] = chk.checked;
+      saveCheckout(data);
+      // Prepare payload for order-create function
+      var cart = getCart();
+      var customer = {
+        email: data.email,
+        phone: data.phone,
+        ship_name: data.ship_name,
+        ship_address1: data.ship_address1,
+        ship_address2: data.ship_address2,
+        ship_city: data.ship_city,
+        ship_state: data.ship_state,
+        ship_postal: data.ship_postal,
+        ship_country: data.ship_country,
+        same_billing: data.same_billing,
+        bill_name: data.bill_name,
+        bill_address1: data.bill_address1,
+        bill_address2: data.bill_address2,
+        bill_city: data.bill_city,
+        bill_state: data.bill_state,
+        bill_postal: data.bill_postal,
+        bill_country: data.bill_country
+      };
+      var payload = {
+        customer: customer,
+        cart: cart,
+        payment_method: selected
+      };
+      try {
+        var resp = await fetch('/.netlify/functions/order-create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        var resData = await resp.json();
+        if (!resp.ok || !resData || !resData.ok) {
+          console.error('Order creation failed', resData);
+          alert('There was a problem submitting your order. Please try again.');
+          return;
+        }
+        // Persist order info for payment instructions page
+        localStorage.setItem('orderId', resData.orderId);
+        localStorage.setItem('orderTotal', Number(resData.total).toFixed(2));
+        localStorage.setItem('method', selected);
+        // Redirect to payment instructions page
+        var url = new URL('payment-instructions.html', window.location.href);
+        url.searchParams.set('method', selected);
+        url.searchParams.set('order', resData.orderId);
+        url.searchParams.set('total', Number(resData.total).toFixed(2));
+        window.location.href = url.toString();
+      } catch (err) {
+        console.error('Failed to create order', err);
+        alert('There was a problem submitting your order. Please try again later.');
+      }
+    });
 })();
 </script>
 </body>
