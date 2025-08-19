@@ -1,468 +1,297 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Checkout — Peptide Hub</title>
+  <meta charset="utf-8" />
+  <title>Checkout – The Peptide Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root{
-      --green:#1CB346;
-      --green-d:#0f6b2b;
-      --ink:#0f172a;
-      --muted:#5b6472;
-      --card:#ffffff;
-      --radius:22px;
-      --shadow:0 10px 30px rgba(0,0,0,.08);
-      --border:#eef2f0;
-      --bg:#ffffff;
-    }
+    :root{--bg:#0b0b0c;--panel:#141416;--muted:#a7a7ad;--text:#fff;--ok:#19c37d;--err:#ff6166;--brand:#7c3aed}
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Inter,Roboto,Arial;-webkit-font-smoothing:antialiased;overflow-x:hidden;max-width:100%}
-    a{text-decoration:none;color:inherit}
-    img{max-width:100%;display:block}
-    .container{max-width:1000px;margin:0 auto;padding:0 16px}
-    /* Compact header like index */
-    .header{
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background: linear-gradient(90deg, var(--green), var(--green-d));
-      color: #fff;
-      border-bottom: 1px solid rgba(0,0,0,.04);
+    html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    a{color:var(--ok);text-decoration:none}
+    .container{max-width:960px;margin:32px auto;padding:16px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .card{background:var(--panel);border:1px solid #242427;border-radius:16px;padding:20px}
+    h1{margin:0 0 8px 0;font-size:28px}
+    h2{margin:0 0 12px 0;font-size:20px}
+    label{display:block;font-size:14px;color:var(--muted);margin:10px 0 6px}
+    input,select,button,textarea{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid #2a2a2e;background:#0f0f11;color:#fff
     }
-    .header a{ color:#fff; }
-    .nav-compact{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 0;
-      padding-top:calc(12px + env(safe-area-inset-top));
-    }
-    .nav-compact .brand{ display:flex; align-items:center; }
-    .nav-compact .brand img.logo{ height:44px; width:auto; display:block; }
-    .nav-compact .actions{ display:flex; gap:10px; align-items:center; }
-    .nav-btn{
-      font-weight:800;color:#fff;padding:10px 14px;border-radius:12px;
-      border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.10);
-      backdrop-filter:saturate(1.1);white-space:nowrap;
-    }
-    .nav-btn:hover{ background:rgba(255,255,255,.18); }
-    @media (max-width:420px){ .nav-btn{ padding:8px 12px; font-size:.95rem } }
-    /* Panels / layout */
-    .panel{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:16px}
-    main{margin:20px 0 28px}
-    .grid{
-      display:grid;gap:16px;grid-template-columns:1fr;grid-template-areas:
-      "order"
-      "details"
-      "actions";
-    }
-    /* Desktop: details left, order right; actions full width */
-    @media (min-width:900px){
-      .grid{grid-template-columns:1.1fr .9fr;grid-template-areas:
-        "details order"
-        "actions actions";
-      }
-    }
-    /* Desktop: details left, order right */
-    @media (min-width:900px){
-      .grid{grid-template-columns:1.1fr .9fr;grid-template-areas:"details order"}
-    }
-    @media (min-width:900px){ .grid{ grid-template-columns:1.1fr .9fr } }
-    h2,h3{margin:6px 0 12px}
-    label{font-weight:700;font-size:.95rem}
-    .same-row{margin-top:14px;display:flex;align-items:center;gap:8px}
-    .same-row input{flex:0 0 auto}
-    .same-row label{flex:0 1 auto;white-space:nowrap;margin:0}
-    input,select{
-      width:100%;padding:10px 12px;border:1px solid #e6e9ee;border-radius:12px;
-      font-size:1rem;outline:none;transition:border-color .15s ease;
-    }
-    input:focus,select:focus{ border-color:#b7e6c7; box-shadow:0 0 0 3px rgba(28,179,70,.12) }
-    .row{display:grid;gap:10px;grid-template-columns:1fr}
-    @media (min-width:600px){ .row{ grid-template-columns:1fr 1fr } }
-    .hint{color:#64748b;font-size:.85rem;margin-top:4px}
-    /* Buttons */
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--green);color:#fff;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 20px rgba(28,179,70,.20);transition:.15s ease;border:0;cursor:pointer}
-    .btn:hover{background:#17a03f;transform:translateY(-1px)}
-    .btn[disabled]{opacity:.6;cursor:not-allowed;transform:none}
-    /* Order list */
-    .line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #e6e9ee}
-    .qtybtn{margin-left:10px;border:1px solid #e6e9ee;border-radius:8px;padding:2px 8px;background:#fff;cursor:pointer}
-    .qtybtn:active{transform:translateY(1px)}
-    /* Payment cards */
-    .paygrid{display:grid;gap:12px;grid-template-columns:1fr}
-    @media (min-width:600px){ .paygrid{grid-template-columns:1fr 1fr} }
-    .pay{cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:14px;border:2px solid #eef2f0;border-radius:18px;background:#fff;position:relative}
-    .pay.selected{ box-shadow:0 0 0 4px rgba(28,179,70,.12); border-color:#cdeed7 }
-    .pay img{width:42px;height:42px;object-fit:contain;border-radius:12px}
-    .pay .title{margin:0 0 2px;font-weight:900}
-    .pay .eta{font-size:.9rem;color:#256746;margin-bottom:6px}
-    .steps{display:none;color:#5b6472;font-size:.93rem;line-height:1.6;margin-top:4px}
-    .pay.selected .steps{display:block}
-    /* Trust */
-    .trust{display:flex;gap:12px;flex-wrap:wrap;color:#64748b;font-size:.93rem}
-    .pill{background:#f1f5f9;border:1px solid #e6e9ee;border-radius:999px;padding:6px 10px}
-    footer{max-width:1000px;margin:28px auto 64px;padding:0 16px;color:#334155}
-    footer .legal{background:#f8faf9;padding:16px;border:1px solid #e6e9ee;border-radius:16px}
+    input:focus,select:focus,textarea:focus{outline:2px solid #2f2f35;border-color:#3a3a40}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .muted{color:var(--muted);font-size:13px}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#1b1b1e;border:1px solid #2a2a2e;font-size:12px;color:var(--muted)}
+    .pm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .pm-option{cursor:pointer;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:12px;border:1px solid #2a2a2e;background:#111113}
+    .pm-option input{display:none}
+    .pm-option.active{border-color:var(--brand);box-shadow:0 0 0 2px rgba(124,58,237,.25) inset}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #2a2a2e}
+    tfoot td{border-top:1px solid #2a2a2e;border-bottom:none}
+    .right{text-align:right}
+    .actions{display:flex;gap:12px;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 16px;border-radius:12px;border:1px solid #2a2a2e;background:#19191c;color:#fff;cursor:pointer;width:100%}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),#4c1d95)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .alert{margin-top:12px;padding:12px;border-radius:12px;border:1px solid #2a2a2e;background:#121214}
+    .alert.ok{border-color:#1f5f49;background:#0e1f18}
+    .alert.err{border-color:#5f1f21;background:#1f0e0f}
+    .small{font-size:12px}
+    .disclaimer{font-size:12px;color:#b3b3ba;background:#121214;border:1px dashed #2a2a2e;border-radius:12px;padding:10px;margin-top:10px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-<header class="header">
-  <div class="container nav-compact">
-    <a aria-label="Peptide Hub — Home" class="brand" href="/">
-      <img class="logo" src="assets/logo.png" alt="Peptide Hub logo">
-    </a>
-    <div class="actions">
-      <a class="nav-btn" href="/admin">Track Your Package</a>
-      <a class="nav-btn" href="/checkout" id="mini-cart-link">Cart (<span id="mini-cart-count">0</span>)</a>
+  <div class="container">
+    <h1>Checkout</h1>
+    <div class="grid">
+      <!-- Left: Shipping & Payment -->
+      <div class="card">
+        <h2>Contact & Shipping</h2>
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+
+        <label>Full name (for research)</label>
+        <input id="name" placeholder="e.g. Jane Researcher" autocomplete="name" />
+
+        <label>Address line 1</label>
+        <input id="addr1" autocomplete="address-line1" placeholder="123 Main St" />
+
+        <label>Address line 2</label>
+        <input id="addr2" autocomplete="address-line2" placeholder="Apt, suite, etc. (optional)" />
+
+        <div class="row">
+          <div>
+            <label>City</label>
+            <input id="city" autocomplete="address-level2" />
+          </div>
+          <div>
+            <label>State / Province</label>
+            <input id="state" autocomplete="address-level1" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Postal code</label>
+            <input id="zip" inputmode="numeric" autocomplete="postal-code" />
+          </div>
+          <div>
+            <label>Country</label>
+            <select id="country">
+              <option value="US" selected>United States</option>
+              <option value="CA">Canada</option>
+              <option value="GB">United Kingdom</option>
+              <option value="AU">Australia</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+        <h2>Payment</h2>
+        <div class="pm-grid" id="pmGrid">
+          <label class="pm-option"><input type="radio" name="pm" value="cashapp" />Cash App</label>
+          <label class="pm-option"><input type="radio" name="pm" value="venmo" />Venmo</label>
+          <label class="pm-option"><input type="radio" name="pm" value="zelle" />Zelle</label>
+          <label class="pm-option"><input type="radio" name="pm" value="bitcoin" />Bitcoin</label>
+        </div>
+
+        <div class="disclaimer">
+          <strong>Research Use Only.</strong> By placing an order you confirm you are purchasing for research purposes. Not for human consumption.
+        </div>
+
+        <div class="actions">
+          <button id="btnTest" class="btn">Fill test data</button>
+          <button id="btnSubmit" class="btn primary">Submit Order</button>
+        </div>
+
+        <div id="msg" class="alert" style="display:none"></div>
+      </div>
+
+      <!-- Right: Cart summary -->
+      <div class="card">
+        <h2>Order summary</h2>
+        <div class="muted small" id="cartHint">Loading cart…</div>
+        <table id="cartTable" style="display:none">
+          <thead>
+            <tr><th>Item</th><th class="right">Qty</th><th class="right">Price</th></tr>
+          </thead>
+          <tbody id="cartBody"></tbody>
+          <tfoot>
+            <tr><td colspan="2" class="right">Subtotal</td><td class="right" id="subtotalCell">$0.00</td></tr>
+          </tfoot>
+        </table>
+        <div style="margin-top:12px" class="muted small">
+          Need help? Email <a href="mailto:support@thepeptidehub.net">support@thepeptidehub.net</a>
+        </div>
+      </div>
     </div>
   </div>
-</header>
-<main class="container">
-  <h2 style="margin:14px 0">Secure Checkout</h2>
-  <div class="trust" aria-hidden="true">
-    <span class="pill">TLS encryption</span>
-    <span class="pill">Discreet packaging</span>
-    <span class="pill">COA on request</span>
-    <span class="pill">US-based support</span>
-  </div>
-  <div class="grid" style="margin-top:12px">
-    <!-- Left: Customer details -->
-    <section class="panel details" id="details" style="grid-area:details">
-      <h3>Contact</h3>
-      <div class="row">
-        <div>
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="you@lab.edu" required="">
-          <div class="hint">We’ll email your order confirmation and tracking link.</div>
-        </div>
-        <div>
-          <label for="phone">Phone (optional)</label>
-          <input id="phone" type="tel" placeholder="(555) 555‑1234">
-        </div>
-      </div>
-      <h3 style="margin-top:16px">Shipping address</h3>
-      <div>
-        <label for="ship_name">Full name</label>
-        <input id="ship_name" placeholder="Full name" required="">
-      </div>
-      <div class="row">
-        <div>
-          <label for="ship_address1">Address line 1</label>
-          <input id="ship_address1" placeholder="Address line 1" required="">
-        </div>
-        <div>
-          <label for="ship_address2">Address line 2 (optional)</label>
-          <input id="ship_address2" placeholder="Apt, suite, etc.">
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label for="ship_city">City</label>
-          <input id="ship_city" required="">
-        </div>
-        <div>
-          <label for="ship_state">State/Province</label>
-          <input id="ship_state" required="">
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label for="ship_postal">Postal code</label>
-          <input id="ship_postal" required="">
-        </div>
-        <div>
-          <label for="ship_country">Country</label>
-          <input id="ship_country" value="US" required="">
-        </div>
-      </div>
-      <div class="same-row"><input id="same_billing" type="checkbox" checked=""><label for="same_billing">Billing same as shipping</label></div>
-      <div id="billing_block" style="display:none;margin-top:10px">
-        <h3>Billing address</h3>
-        <div>
-          <label for="bill_name">Full name</label>
-          <input id="bill_name" placeholder="Full name">
-        </div>
-        <div class="row">
-          <div>
-            <label for="bill_address1">Address line 1</label>
-            <input id="bill_address1" placeholder="Address line 1">
-          </div>
-          <div>
-            <label for="bill_address2">Address line 2 (optional)</label>
-            <input id="bill_address2" placeholder="Apt, suite, etc.">
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label for="bill_city">City</label>
-            <input id="bill_city">
-          </div>
-          <div>
-            <label for="bill_state">State/Province</label>
-            <input id="bill_state">
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label for="bill_postal">Postal code</label>
-            <input id="bill_postal">
-          </div>
-          <div>
-            <label for="bill_country">Country</label>
-            <input id="bill_country" value="US">
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- Right: Order & Payment -->
-    <aside class="panel order" style="grid-area:order">
-      <h3>Your Order</h3>
-      <div id="cart-box">
-        <div id="cart-list"><div style="color:#5b6472;padding:8px">Your cart is empty. <a href="index.html#products" style="color:#1CB346;font-weight:800">Add products</a>.</div></div>
-        <div style="display:flex;justify-content:space-between;font-weight:900;padding-top:8px">
-          <span>Total</span><span id="total-val">$0.00</span>
-        </div>
-      </div>
-      <h3 style="margin-top:16px">Choose a Payment Method</h3>
-      <div class="paygrid" id="paygrid">
-        <div class="pay" data-method="cashapp">
-          <img src="assets/pay-cashapp.png" alt="Cash App">
-          <div>
-            <div class="title">Cash App</div>
-            <div class="eta">Estimated confirmation: <strong>0–6 hours</strong></div>
-            <div class="steps">
-              <ol>
-                <li>Open Cash App and send the <b>order total</b> to <b>$PeptideCo</b>.</li>
-                <li>In the note, include: <b>Order # (shown after submit)</b>.</li>
-                <li>We’ll email confirmation once received.</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-        <div class="pay" data-method="venmo">
-          <img src="assets/pay-venmo.png" alt="Venmo">
-          <div>
-            <div class="title">Venmo</div>
-            <div class="eta">Estimated confirmation: <strong>0–6 hours</strong></div>
-            <div class="steps">
-              <ol>
-                <li>Open Venmo and pay the <b>order total</b> to <b>@PeptideCo</b>.</li>
-                <li>Add a memo: <b>Order # (shown after submit)</b>.</li>
-                <li>We’ll email confirmation once received.</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-        <div class="pay" data-method="zelle">
-          <img src="assets/pay-zelle.png" alt="Zelle">
-          <div>
-            <div class="title">Zelle</div>
-            <div class="eta">Estimated confirmation: <strong>0–24 hours</strong></div>
-            <div class="steps">
-              <ol>
-                <li>Send the <b>order total</b> via Zelle to <b>support@peptideco.com</b>.</li>
-                <li>Memo: <b>Order # (shown after submit)</b>.</li>
-                <li>We’ll email confirmation once received.</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-        <div class="pay" data-method="bitcoin">
-          <img src="assets/pay-bitcoin.png" alt="Bitcoin">
-          <div>
-            <div class="title">Bitcoin</div>
-            <div class="eta">Estimated confirmation: <strong>~10–60 min</strong> (1–2 confirmations)</div>
-            <div class="steps">
-              <ol>
-                <li>After submitting, you’ll see a <b>unique BTC address</b>.</li>
-                <li>Send the <b>order total</b> to that address.</li>
-                <li>We’ll confirm after 1–2 network confirmations.</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div>
-    </aside>
-    <!-- Actions footer -->
-    <section class="panel actions" id="actions" style="grid-area:actions">
-      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-        <a class="btn" href="/" style="background:#0f172a">Continue Shopping</a>
-        <button class="btn" id="submit-order" disabled="">Submit Order</button>
-      </div>
-      <div class="hint" style="margin-top:8px;text-align:right">By submitting, you agree to our research‑use‑only policy.</div>
-    </section>
-  </div>
-</main>
-<footer>
-  <div class="legal"><strong>Legal:</strong> For research purposes only. Not for human consumption. Must be 21+ to purchase.</div>
-</footer>
-<script>
-// Modified checkout script with email integration
-(function(){
-  // Cart helpers
-  function getCart(){ try{ return JSON.parse(localStorage.getItem('ph_cart')||'[]'); }catch(e){ return []; } }
-  function saveCart(c){ localStorage.setItem('ph_cart', JSON.stringify(c)); document.dispatchEvent(new Event('ph_cart_updated')); }
-  // Prefill from localStorage (basic)
-  function getCheckout(){ try{ return JSON.parse(localStorage.getItem('ph_checkout')||'{}'); }catch(e){ return {}; } }
-  function saveCheckout(data){ localStorage.setItem('ph_checkout', JSON.stringify(data)); }
-  // Render mini cart count
-  function renderMini(){ var span = document.getElementById('mini-cart-count'); if(!span) return;
-    span.textContent = getCart().reduce((n,i)=>n+(i.qty||0),0);
-  }
-  document.addEventListener('ph_cart_updated', renderMini);
-  window.addEventListener('storage', function(e){ if(e.key==='ph_cart') renderMini(); });
-  document.addEventListener('DOMContentLoaded', renderMini);
-  // Populate form from saved data
-  document.addEventListener('DOMContentLoaded', function(){
-    var data = getCheckout();
-    ['email','phone',
-     'ship_name','ship_address1','ship_address2','ship_city','ship_state','ship_postal','ship_country',
-     'bill_name','bill_address1','bill_address2','bill_city','bill_state','bill_postal','bill_country'
-    ].forEach(function(id){ if(data[id]){ var el=document.getElementById(id); if(el) el.value=data[id]; }});
-  });
-  // Toggle billing block
-  var chk = document.getElementById('same_billing');
-  var billing = document.getElementById('billing_block');
-  function updateBillingToggle(){
-    var same = chk.checked;
-    billing.style.display = same ? 'none' : 'block';
-    // Toggle required fields
-    ['bill_name','bill_address1','bill_city','bill_state','bill_postal','bill_country'].forEach(function(id){
-      var el=document.getElementById(id); if(!el) return;
-      el.required = !same;
-    });
-  }
-  chk.addEventListener('change', updateBillingToggle);
-  updateBillingToggle();
-  // Render cart
-  var list = document.getElementById('cart-list');
-  var totalEl = document.getElementById('total-val');
-  function renderCart(){
-    var cart = getCart();
-    list.innerHTML='';
-    var total=0;
-    if(cart.length===0){
-      list.innerHTML='<div style="color:#5b6472;padding:8px">Your cart is empty. <a href="index.html#products" style="color:#1CB346;font-weight:800">Add products</a>.</div>';
-      totalEl.textContent = '$0.00';
-      updateSubmitDisabled();
-      return;
+
+  <script>
+    // ---------- Small utils ----------
+    const $ = (id) => document.getElementById(id);
+    const fmtUSD = (cents) => '$' + (cents/100).toFixed(2);
+    const cents = (n) => Math.round(Number(n) * 100);
+
+    function showMsg(kind, text) {
+      const box = $('msg');
+      box.className = 'alert ' + (kind === 'ok' ? 'ok' : 'err');
+      box.style.display = 'block';
+      box.textContent = text;
     }
-    cart.forEach(function(item, idx){
-      var line = document.createElement('div');
-      line.className='line';
-      var left = document.createElement('div'); left.textContent = item.name + ' — ' + item.size + ' × ' + item.qty;
-      var rightWrap = document.createElement('div'); rightWrap.style.display='flex'; rightWrap.style.alignItems='center'; rightWrap.style.flexWrap='wrap'; rightWrap.style.gap='8px'; rightWrap.style.justifyContent='flex-end';
-      var price = document.createElement('div'); var lineTotal = item.price * item.qty; price.textContent = '$' + lineTotal.toFixed(2); total += lineTotal;
-      var minus = document.createElement('button'); minus.className='qtybtn'; minus.textContent='–'; minus.onclick=function(){ var c=getCart(); if(c[idx].qty>1){c[idx].qty-=1}else{c.splice(idx,1)}; saveCart(c); renderCart();};
-      var plus = document.createElement('button'); plus.className='qtybtn'; plus.textContent='+'; plus.onclick=function(){ var c=getCart(); c[idx].qty+=1; saveCart(c); renderCart();};
-      var rm = document.createElement('a'); rm.href='#'; rm.textContent='Remove'; rm.style.marginLeft='10px'; rm.style.color='#b91c1c'; rm.style.fontWeight='800'; rm.onclick=function(e){e.preventDefault(); var c=getCart(); c.splice(idx,1); saveCart(c); renderCart();};
-      rightWrap.appendChild(price); rightWrap.appendChild(minus); rightWrap.appendChild(plus); rightWrap.appendChild(rm);
-      line.appendChild(left); line.appendChild(rightWrap); list.appendChild(line);
+    function clearMsg(){ const box=$('msg'); box.style.display='none'; box.textContent='' }
+
+    // ---------- Payment picker UI ----------
+    const pmGrid = $('pmGrid');
+    pmGrid.addEventListener('click', (e)=>{
+      const label = e.target.closest('.pm-option');
+      if (!label) return;
+      pmGrid.querySelectorAll('.pm-option').forEach(x=>x.classList.remove('active'));
+      label.classList.add('active');
+      const input = label.querySelector('input[type=radio]');
+      input.checked = true;
     });
-    totalEl.textContent = '$' + total.toFixed(2);
-    updateSubmitDisabled();
-  }
-  document.addEventListener('DOMContentLoaded', renderCart);
-  document.addEventListener('ph_cart_updated', renderCart);
-  // Payment selection
-  var selected = null;
-  document.querySelectorAll('.pay').forEach(function(card){
-    card.addEventListener('click', function(){
-      document.querySelectorAll('.pay').forEach(function(x){ x.classList.remove('selected'); });
-      card.classList.add('selected');
-      selected = card.getAttribute('data-method');
-      updateSubmitDisabled();
-    });
-  });
-  // Enable/disable submit
-  var submitBtn = document.getElementById('submit-order');
-  function requiredFilled(){
-    var ids = ['email','ship_name','ship_address1','ship_city','ship_state','ship_postal','ship_country'];
-    if(!chk.checked){ ids = ids.concat(['bill_name','bill_address1','bill_city','bill_state','bill_postal','bill_country']); }
-    for(var i=0;i<ids.length;i++){
-      var el=document.getElementById(ids[i]);
-      if(!el || !el.value.trim()){ return false; }
-      if(el.id==='email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) return false;
+
+    // ---------- Cart adapter ----------
+    /**
+     * We’ll try multiple places so it works with your existing site without changes.
+     * Accepted item shape: { sku, name, qty, price } where price can be cents or "$199.00" or 199
+     */
+    function parseItem(raw) {
+      const sku = raw.sku || raw.id || raw.handle || 'SKU';
+      const name = raw.name || raw.title || sku;
+      const qty = Number(raw.qty ?? raw.quantity ?? 1);
+      let price = raw.price ?? raw.price_cents ?? raw.unit_price;
+      if (typeof price === 'string') {
+        const m = price.replace(/[^0-9.]/g,'');
+        price = Number(m.includes('.') ? (Number(m)*100).toFixed(0) : m);
+      } else if (typeof price === 'number' && price < 1000) {
+        // looks like dollars
+        price = Math.round(price * 100);
+      }
+      return { sku, name, qty, price: Number(price) };
     }
-    return true;
-  }
-  function updateSubmitDisabled(){
-    var cartOk = getCart().length>0;
-    submitBtn.disabled = !(cartOk && selected && requiredFilled());
-  }
-  document.addEventListener('input', updateSubmitDisabled);
-    // Submit handler using order-create function
-    submitBtn.addEventListener('click', async function() {
-      if (submitBtn.disabled) return;
-      // Collect and save checkout info locally
-      var data = {};
-      [
-        'email','phone',
-        'ship_name','ship_address1','ship_address2','ship_city','ship_state','ship_postal','ship_country',
-        'bill_name','bill_address1','bill_address2','bill_city','bill_state','bill_postal','bill_country'
-      ].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) data[id] = el.value;
+
+    function loadCart() {
+      // 1) URL ?sku=&name=&price=&qty=
+      const qp = new URLSearchParams(location.search);
+      if (qp.get('sku')) {
+        const item = parseItem({
+          sku: qp.get('sku'),
+          name: qp.get('name') || qp.get('sku'),
+          qty: Number(qp.get('qty') || 1),
+          price: qp.get('price') || '0'
+        });
+        return [item];
+      }
+
+      // 2) localStorage common keys
+      const keys = ['peptidehub_cart', 'cart', 'th_cart', 'cartItems'];
+      for (const k of keys) {
+        try {
+          const raw = JSON.parse(localStorage.getItem(k) || 'null');
+          if (!raw) continue;
+          // arrays or maps
+          if (Array.isArray(raw)) return raw.map(parseItem);
+          if (raw.items && Array.isArray(raw.items)) return raw.items.map(parseItem);
+          if (typeof raw === 'object') return Object.values(raw).map(parseItem);
+        } catch {}
+      }
+
+      // 3) fallback example (Retatrutide $199)
+      return [{ sku:'RETATRUTIDE', name:'Retatrutide', qty:1, price:19900 }];
+    }
+
+    function renderCart(items){
+      const tbody = $('cartBody');
+      tbody.innerHTML = '';
+      let subtotal = 0;
+      items.forEach(it=>{
+        subtotal += (it.price * it.qty);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${it.name}</td><td class="right">${it.qty}</td><td class="right">${fmtUSD(it.price)}</td>`;
+        tbody.appendChild(tr);
       });
-      data['same_billing'] = chk.checked;
-      saveCheckout(data);
-      // Prepare payload for order-create function
-      var cart = getCart();
-      var customer = {
-        email: data.email,
-        phone: data.phone,
-        ship_name: data.ship_name,
-        ship_address1: data.ship_address1,
-        ship_address2: data.ship_address2,
-        ship_city: data.ship_city,
-        ship_state: data.ship_state,
-        ship_postal: data.ship_postal,
-        ship_country: data.ship_country,
-        same_billing: data.same_billing,
-        bill_name: data.bill_name,
-        bill_address1: data.bill_address1,
-        bill_address2: data.bill_address2,
-        bill_city: data.bill_city,
-        bill_state: data.bill_state,
-        bill_postal: data.bill_postal,
-        bill_country: data.bill_country
+      $('subtotalCell').textContent = fmtUSD(subtotal);
+      $('cartHint').style.display = 'none';
+      $('cartTable').style.display = '';
+      return subtotal;
+    }
+
+    const CART = loadCart();
+    let SUBTOTAL = renderCart(CART);
+
+    // ---------- Submit ----------
+    $('btnTest').addEventListener('click', ()=>{
+      $('email').value = 'test@example.com';
+      $('name').value = 'Test Research';
+      $('addr1').value = '123 Main St';
+      $('addr2').value = '';
+      $('city').value = 'Dodge City';
+      $('state').value = 'KS';
+      $('zip').value = '67801';
+      $('country').value = 'US';
+      // Select Cash App
+      const first = pmGrid.querySelector('label.pm-option');
+      pmGrid.querySelectorAll('.pm-option').forEach(x=>x.classList.remove('active'));
+      first.classList.add('active'); first.querySelector('input').checked = true;
+    });
+
+    $('btnSubmit').addEventListener('click', async ()=>{
+      clearMsg();
+      const btn = $('btnSubmit');
+      btn.disabled = true; btn.textContent = 'Submitting…';
+
+      // Basic validation
+      const email = $('email').value.trim();
+      if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { showMsg('err','Please enter a valid email.'); btn.disabled=false; btn.textContent='Submit Order'; return; }
+      const pmInput = pmGrid.querySelector('input[name=pm]:checked');
+      if (!pmInput) { showMsg('err','Select a payment method.'); btn.disabled=false; btn.textContent='Submit Order'; return; }
+      if (!CART.length || SUBTOTAL <= 0) { showMsg('err','Your cart is empty.'); btn.disabled=false; btn.textContent='Submit Order'; return; }
+
+      // Build payload (matches the Netlify function)
+      const payload = {
+        email,
+        name: $('name').value.trim() || null,
+        address: {
+          line1: $('addr1').value.trim() || null,
+          line2: $('addr2').value.trim() || null,
+          city: $('city').value.trim() || null,
+          state: $('state').value.trim() || null,
+          postal_code: $('zip').value.trim() || null,
+          country: $('country').value || 'US'
+        },
+        items: CART,
+        subtotal_cents: SUBTOTAL,
+        payment_method: pmInput.value
       };
-      var payload = {
-        customer: customer,
-        cart: cart,
-        payment_method: selected
-      };
+
+      // Call Netlify function
       try {
-        var resp = await fetch('/.netlify/functions/order-create', {
+        const res = await fetch('/.netlify/functions/order-create', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'content-type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        var resData = await resp.json();
-        if (!resp.ok || !resData || !resData.ok) {
-          console.error('Order creation failed', resData);
-          alert('There was a problem submitting your order. Please try again.');
-          return;
+
+        // Helpful status diagnostics
+        if (res.status === 404) throw new Error('Order service not found (404). Netlify Functions might not be deploying.');
+        if (res.status === 405) throw new Error('Order service is live but needs POST (405). This means Functions are deployed.');
+
+        const data = await res.json().catch(()=>({error:'Invalid JSON response'}));
+        if (!res.ok || !data.ok) {
+          throw new Error(data?.error || `Error ${res.status}`);
         }
-        // Persist order info for payment instructions page
-        localStorage.setItem('orderId', resData.orderId);
-        localStorage.setItem('orderTotal', Number(resData.total).toFixed(2));
-        localStorage.setItem('method', selected);
-        // Redirect to payment instructions page
-        var url = new URL('payment-instructions.html', window.location.href);
-        url.searchParams.set('method', selected);
-        url.searchParams.set('order', resData.orderId);
-        url.searchParams.set('total', Number(resData.total).toFixed(2));
-        window.location.href = url.toString();
+
+        showMsg('ok', `Order received! ID: ${data.order.id}`);
+        btn.textContent = 'Order Submitted';
       } catch (err) {
-        console.error('Failed to create order', err);
-        alert('There was a problem submitting your order. Please try again later.');
+        showMsg('err', String(err.message || err));
+        btn.disabled = false; btn.textContent = 'Submit Order';
       }
     });
-})();
-</script>
+  </script>
 </body>
 </html>
