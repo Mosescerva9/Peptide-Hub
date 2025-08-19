@@ -37,10 +37,28 @@ export default async (request, context) => {
       items,
       subtotal_cents,
       payment_method,
+      address,
     } = body;
 
+    // Normalize address fields from either top-level keys or nested `address` object. This allows
+    // clients to send address as { line1, line2, city, state, postal_code, country } or
+    // as top‑level snake_cased fields. We also support camelCase fallback for common frontends.
+    const line1 = address_line1 ?? address?.line1 ?? address?.address_line1 ?? address?.addressLine1 ?? null;
+    const line2 = address_line2 ?? address?.line2 ?? address?.address_line2 ?? address?.addressLine2 ?? null;
+    const cityVal = city ?? address?.city ?? null;
+    const stateVal = state ?? address?.state ?? null;
+    const postalCodeVal = postal_code ?? address?.postal_code ?? address?.postalCode ?? null;
+    const countryVal = country ?? address?.country ?? null;
+
+    // Accept both array and object forms for items. If an object is provided, use its values.
+    const itemsArr = Array.isArray(items)
+      ? items
+      : items && typeof items === 'object'
+      ? Object.values(items)
+      : [];
+
     // Basic validation
-    if (!email || !Array.isArray(items) || !items.length || !subtotal_cents || !payment_method) {
+    if (!email || !itemsArr.length || typeof subtotal_cents !== 'number' || !payment_method) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields: email, items, subtotal_cents, payment_method' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } },
@@ -67,13 +85,13 @@ export default async (request, context) => {
       VALUES (
         ${email},
         ${name ?? null},
-        ${address_line1 ?? null},
-        ${address_line2 ?? null},
-        ${city ?? null},
-        ${state ?? null},
-        ${postal_code ?? null},
-        ${country ?? null},
-        ${JSON.stringify(items)},
+        ${line1},
+        ${line2},
+        ${cityVal},
+        ${stateVal},
+        ${postalCodeVal},
+        ${countryVal},
+        ${JSON.stringify(itemsArr)},
         ${subtotal_cents},
         ${payment_method}
       )
